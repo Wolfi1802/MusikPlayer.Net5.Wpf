@@ -1,16 +1,19 @@
 ﻿using MusikPlayer.Model;
-
+using NAudio.Wave;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
 
 namespace MusikPlayer.ViewModel
 {
     public class SoundItemViewModel : ViewModelBase
     {
-        //private Mp3FileReader _reader;
+        private Mp3FileReader _reader;
+
+
         public SoundItemViewModel(SoundItem item)
         {
             this.Model = item;
@@ -89,8 +92,8 @@ namespace MusikPlayer.ViewModel
         {
             if (!string.IsNullOrEmpty(soundPath))
             {
-                //this._reader = new Mp3FileReader(soundPath);
-                //this.DurationToShow = this._reader.TotalTime.ToString(this.Model.StringFormatDuration);
+                this._reader = new Mp3FileReader(soundPath);
+                this.DurationToShow = this._reader.TotalTime.ToString(this.Model.StringFormatDuration);
                 this.UpdateDurationDone = true;
             }
         }

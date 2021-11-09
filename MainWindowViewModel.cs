@@ -162,12 +162,6 @@ namespace MusikPlayer
             }
         }
 
-        //public object Scale
-        //{
-        //    get => base.GetProperty<Image>(nameof(this.Scale));
-        //    set => base.SetProperty(nameof(this.Scale), value);
-        //}
-
         public bool RepeatActive
         {
             get => base.GetProperty<bool>(nameof(this.RepeatActive));

@@ -3,14 +3,19 @@ TODO[TS]
 - Template für die Favoriten CheckBox (stern mit orang gelben inhalt wenn aktiv und weißem rand)
 - Scrollbar Template hinzugefügt
 
+[TS] 09.11.2021 Projekt Update
+- N.Audio dem Projekt hinzugefügt
+
+[TS] 09.11.2021 Framework Update
+- Neues Projekt erstellt und implementiert
+- N.Audio aus dem Projekt entfernt
+
 [TS] 09.11.2021 Framewor Update
 - Neues Projekt erstellt und implementiert
 - N.Audio aus dem Projekt entfernt
 
 [TS] 06.11.2021 Logger + Changelog Pflege
 - Logger hinzugefügt
-
-
 
 [TS] 18.10.2021 
 - Performance verbessert (Songs werden nun schneller geladen)
@@ -21,7 +26,6 @@ TODO[TS]
 - SongItems Via Json gepsiehcert/geladen
 - Versions info hinzugefügt
 - Performance des Ladens verbessert (es gibt nun eine json die alle pfade der letzen Sitzung speichert und anhand dieser die Daten lädt).
-
 
 [TS] 29.08.2021 (2)
 - BUGFIX => schließen und verkleinern sind in der View "Unsichtbar geworden
