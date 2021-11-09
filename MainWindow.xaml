@@ -1,0 +1,266 @@
+﻿<Window x:Class="MusikPlayer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MusikPlayer"
+        mc:Ignorable="d"
+        Icon="{DynamicResource MenuIcon}"
+        WindowStyle="None"
+        TextElement.FontWeight="Regular"
+        TextElement.FontSize="13"
+        TextOptions.TextFormattingMode="Ideal"
+        TextOptions.TextRenderingMode="Auto"
+        x:Name="Window"
+        MinHeight="550" MinWidth="600" Height="550" Width="600" MaxHeight="550" MaxWidth="600" 
+        Title="{Binding Version_Title}" WindowStartupLocation="CenterScreen">
+
+    <WindowChrome.WindowChrome>
+        <WindowChrome 
+        CaptionHeight="24"
+        ResizeBorderThickness="5" />
+    </WindowChrome.WindowChrome>
+
+    <Window.DataContext>
+        <local:MainWindowViewModel x:Name="MainWindowViewModel"/>
+    </Window.DataContext>
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="ProjectStyles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <BitmapImage x:Key="MenuIcon" UriSource="pack://application:,,,/Resources/Icon.png" />
+            <BitmapImage x:Key="MusicBanner01" UriSource="pack://application:,,,/Resources/Screenshot_6.png" />
+            <BitmapImage x:Key="PictureBorder" UriSource="pack://application:,,,/Resources/Background.png" />
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Grid x:Name="rootGrid" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="24" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <StackPanel x:Name="Header" Grid.Row="0" Grid.ColumnSpan="2" Panel.ZIndex="30" VerticalAlignment="Stretch" 
+                    HorizontalAlignment="Stretch" MouseLeftButtonDown="OnMouseLeftButtonDown"
+                    WindowChrome.IsHitTestVisibleInChrome="True" Background="{DynamicResource WindowHeaderBackground}">
+            <StackPanel Orientation="Horizontal">
+                <DockPanel Width="550">
+                    <Label Content="{Binding Version_Title}" Style="{StaticResource LabelHeaderStyle}"/>
+                    <Label Content="{Binding ErrorMessageForUser}" Style="{StaticResource LabelHeaderStyle}"/>
+                </DockPanel>
+
+                <Button x:Name="Minimize" Width="24" FontSize="16" Height="24" Cursor="Hand" 
+                        BorderBrush="Transparent" Click="OnMinimize" Background="Transparent" 
+                        VerticalContentAlignment="Bottom" Content="_">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Name="border" BorderThickness="0" BorderBrush="Black" Background="{TemplateBinding Background}">
+                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Bottom" />
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="border" Property="Background" Value="#616161" />
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Button.Style>
+                </Button>
+
+                <Button x:Name="Close" FontSize="16" Width="24" Height="24" Cursor="Hand" 
+                        Click="OnClose" BorderBrush="Transparent" Background="Transparent"
+                        Content="X">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Name="border" BorderThickness="0" BorderBrush="Black" Background="{TemplateBinding Background}">
+                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="border" Property="Background" Value="#D32F2F" />
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Button.Style>
+                </Button>
+            </StackPanel>
+        </StackPanel>
+
+        <StackPanel x:Name="Body" Grid.Row="1" Grid.Column="0">
+            <Grid Background="#FF343434">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="250"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Grid x:Name="AnimatedBackgroundPicture" Grid.Row="0" Grid.RowSpan="2" Grid.Column="0" >
+                    <Ellipse Style="{StaticResource EllipseStyle}" Stroke="Transparent">
+                        <Ellipse.Fill>
+                            <ImageBrush ImageSource="{StaticResource MusicBanner01}" Stretch="Fill" />
+                        </Ellipse.Fill>
+                    </Ellipse>
+
+                    <Ellipse Style="{StaticResource EllipseStyle}">
+                        <Ellipse.Stroke>
+                            <ImageBrush ImageSource="{StaticResource PictureBorder}"/>
+                        </Ellipse.Stroke>
+                        <Ellipse.RenderTransform>
+                            <RotateTransform x:Name="Rotation" Angle="0"/>
+                        </Ellipse.RenderTransform>
+                        <Ellipse.Triggers>
+                            <EventTrigger RoutedEvent="Loaded">
+                                <BeginStoryboard>
+                                    <Storyboard RepeatBehavior="Forever">
+                                        <DoubleAnimation
+                                        Storyboard.TargetName="Rotation"
+                                        Storyboard.TargetProperty="Angle"
+                                        From="0"
+                                        To="360"
+                                        Duration="0:0:30"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                        </Ellipse.Triggers>
+                    </Ellipse>
+                </Grid>
+
+                <StackPanel x:Name="MusicList" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Margin="5">
+                    <ListView Name="ListView" SelectionMode="Single"
+                              ItemsSource="{Binding SoundItemsSourceFilter, UpdateSourceTrigger=PropertyChanged}" 
+                              SelectedValue="{Binding SoundSelectedItem, UpdateSourceTrigger=PropertyChanged}"
+                              Background="Transparent" Foreground="White" Height="300" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+
+                        <ListView.View>
+                            <GridView AllowsColumnReorder="False">
+                                <GridView.ColumnHeaderContainerStyle>
+                                    <Style TargetType="GridViewColumnHeader">
+                                        <Setter Property="Background" Value="Transparent"/>
+                                        <Setter Property="Foreground" Value="White"/>
+                                        <Setter Property="Template" Value="{StaticResource GridViewColumnHeaderCustom}"/>
+                                    </Style>
+                                </GridView.ColumnHeaderContainerStyle>
+
+                                <GridViewColumn x:Name="SongTitel" Width="490">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <DockPanel >
+                                                <CheckBox Style="{StaticResource FavoriteCheckBoxStyle}" IsChecked="{Binding IsFavorite, UpdateSourceTrigger=PropertyChanged}"/>
+                                                <Label Style="{StaticResource SoundItemLabelStyle}" Content="{Binding NameToShow, UpdateSourceTrigger=PropertyChanged}"/>
+                                            </DockPanel>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                    <Button Command="{Binding SortTitel}" Content="Song Titel" Style="{StaticResource InvisibleButtonStyle}" Width="{Binding ElementName=SongTitel, Path=Width}"/>
+                                </GridViewColumn>
+
+                                <GridViewColumn x:Name="Duration"  Width="70">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <DockPanel >
+                                                <Label Style="{StaticResource SoundItemLabelStyle}" Content="{Binding DurationToShow, UpdateSourceTrigger=PropertyChanged}"/>
+                                            </DockPanel>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                    <Button Command="{Binding SortDuration}" Content="Dauer" Style="{StaticResource InvisibleButtonStyle}" Width="{Binding ElementName=Duration, Path=Width}"/>
+                                </GridViewColumn>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </StackPanel>
+
+                <StackPanel x:Name="TrackStuff" Grid.Row="0" Grid.Column="1" >
+                    <DockPanel x:Name="SearchTrack">
+                        <TextBox Text="{Binding SearchWord, UpdateSourceTrigger=PropertyChanged}" BorderBrush="White" Foreground="White" BorderThickness="1" Margin="5" Background="Transparent"/>
+                    </DockPanel>
+
+                    <StackPanel x:Name="CurrentTrackInfos" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="10">
+                        <TextBlock Text="{Binding RepeatActiveForView}" Foreground="White" TextAlignment="Right"/>
+                        <TextBlock Text="{Binding CurrentTrackName}"  Foreground="White" TextAlignment="Right"/>
+                        <TextBlock x:Name="SPACER" Style="{StaticResource SoundItemTextBlockStyle}"/>
+                    </StackPanel>
+
+                </StackPanel>
+
+                <StackPanel x:Name="MusicLabelPlayer" Grid.Row="1" Grid.Column="1"  Margin="0,10,0,10" VerticalAlignment="Bottom">
+
+                    <StackPanel x:Name="ButtonPanel" Orientation="Horizontal">
+                        <Button Command="{Binding StartMusic}" Width="50" Margin="0,5,5,5" Style="{DynamicResource ButtonStyle}" ToolTip="Play selected Song">
+                            <Button.Content>
+                                <Path Fill="Black" Data="M 1,1 L 20,10 L 1,18"/>
+                            </Button.Content>
+                        </Button>
+
+                        <Button Command="{Binding BreakMusic}" Width="50" Style="{DynamicResource ButtonStyle}" ToolTip="Break for current Song">
+                            <Button.Content>
+                                <DockPanel>
+                                    <Path Fill="Black" Data="M 0,1 L 2,1 L 2,18 L 0,18"/>
+                                    <Path Fill="Black" Data="M 2,1 L 4,1 L 4,18 L 2,18"/>
+                                </DockPanel>
+                            </Button.Content>
+                        </Button>
+
+                        <Button Command="{Binding StopMusic}" Width="50" Style="{DynamicResource ButtonStyle}" ToolTip="Stop current Song">
+                            <Button.Content>
+                                <Path Fill="Black" Data="M 0,1 L 18,1 L 18,18 L 0,18"/>
+                            </Button.Content>
+                        </Button>
+
+                        <Button Command="{Binding AddMusic}" Width="50" Style="{DynamicResource ButtonStyle}" ToolTip="Add new Song">
+                            <Button.Content>
+                                <Grid>
+                                    <Path Fill="Black" Data="M 1,11 L 1,7 L 18,7 L 18,11 "/>
+                                    <Path Fill="Black" Data="M 11,1 L 7,1 L 7,18 L 11,18"/>
+                                </Grid>
+                            </Button.Content>
+                        </Button>
+
+                        <Button Command="{Binding RepeatMusic}" Width="50" Style="{DynamicResource ButtonStyle}" ToolTip="Repeat On/Off">
+                            <Button.Content>
+                                <Grid>
+                                    <Path Fill="red" Data="M 1,11 L 1,7 L 18,7 L 18,11 "/>
+                                    <Path Fill="red" Data="M 11,1 L 7,1 L 7,18 L 11,18"/>
+                                </Grid>
+                            </Button.Content>
+                        </Button>
+
+                    </StackPanel>
+
+                    <DockPanel>
+                        <DockPanel x:Name="SongDuration" Margin="0,0,5,0" MinHeight="30">
+                            <TextBlock Text="{Binding FormatedCurrentPlayTimer,UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Foreground="White"/>
+                            <ProgressBar x:Name="SoundDuration" Maximum="{Binding ProgressBarMax}" Value="{Binding ProgressBarValue}" Style="{StaticResource ProgressBarAnimatedStyle}" MinWidth="150" Margin="5,0,5,0" />
+                            <TextBlock Text="{Binding FormatedMaxPlayTimer,UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Foreground="White"/>
+                        </DockPanel>
+
+                        <DockPanel x:Name="SoundVolume" Margin="5,0,0,0" MinHeight="30">
+                            <Slider x:Name="SoundSlider" MinWidth="70" Value="{Binding SoundVolume}" Minimum="0" Maximum="100" Margin="0,5,0,5"></Slider>
+                        </DockPanel>
+                    </DockPanel>
+                </StackPanel>
+            </Grid>
+        </StackPanel>
+    </Grid>
+
+</Window>

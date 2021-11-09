@@ -1,0 +1,48 @@
+TODO[TS]
+- Ladebildschirm
+- Template für die Favoriten CheckBox (stern mit orang gelben inhalt wenn aktiv und weißem rand)
+- Scrollbar Template hinzugefügt
+
+[TS] 09.11.2021 Framewor Update
+- Neues Projekt erstellt und implementiert
+- N.Audio aus dem Projekt entfernt
+
+[TS] 06.11.2021 Logger + Changelog Pflege
+- Logger hinzugefügt
+
+
+
+[TS] 18.10.2021 
+- Performance verbessert (Songs werden nun schneller geladen)
+- Favoriten Liste steht nun zur verfügung.
+- Threads gegen Tasks getauscht
+- Sortierung gekapselt
+- Configs Via Json gepsiehcert/geladen
+- SongItems Via Json gepsiehcert/geladen
+- Versions info hinzugefügt
+- Performance des Ladens verbessert (es gibt nun eine json die alle pfade der letzen Sitzung speichert und anhand dieser die Daten lädt).
+
+
+[TS] 29.08.2021 (2)
+- BUGFIX => schließen und verkleinern sind in der View "Unsichtbar geworden
+
+[TS] 29.08.2021
+- Es werden nun ALLE mp3 Files des Gerätes des aktuell aktiven Nutzers eingespielt.
+- Im Programm Header werden nun Fehlermeldungen angezeigt wenn welche auftreten
+
+[TS] 06.08.2021
+- Animation für Border von Ellipse hinzugefügt
+- ListView Header Style agenpasst
+- ListView Header sind nun Sortierbar
+
+[TS] 25.07.2021
+BugFixes:
+- Repeat Funktion wurde nicht angewendet auch wenn diese Aktiv war
+- StringDependencys entfernt
+
+[TS] 25.07.2021
+- BugFixes:
+	-ListView SelectedItem war am blinken  während des "Duration Update Threads"
+-ListViewItem Template hinzugefügt
+-Profilbild hat jetzt eine Ellipse als Border
+-Versch. Style Anpassungen
