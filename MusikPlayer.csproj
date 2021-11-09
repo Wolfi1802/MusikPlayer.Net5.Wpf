@@ -14,6 +14,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="NAudio" Version="2.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Resource Include="Resources\Background.png" />
     <Resource Include="Resources\icon.png" />
     <Resource Include="Resources\Screenshot_6.png" />
