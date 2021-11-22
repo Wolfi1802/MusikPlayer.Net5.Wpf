@@ -148,6 +148,22 @@
         <Setter Property="VerticalAlignment" Value="Center"/>
     </Style>
 
+    <Style x:Key="RunTextTextBox" TargetType="TextBox">
+        <Setter Property="OverridesDefaultStyle" Value="True"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="IsEnabled" Value="False"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate>
+                    <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+                        <ScrollViewer x:Name="PART_ContentHost" Background="{TemplateBinding Background}" Width="{TemplateBinding Width}"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <!--progressbar-->
     <Style x:Key="ProgressBarAnimatedStyle" TargetType="{x:Type ProgressBar}">
         <Setter Property="Template" Value="{DynamicResource AnimatedProgessBarTemplate}">
@@ -375,6 +391,17 @@
         </ControlTemplate.Triggers>
     </ControlTemplate>
 
+    <Style x:Key="GridViewColumnHeaderGripper" TargetType="Thumb">
+        <Setter Property="Width" Value="18" />
+        <Setter Property="Template" Value="{DynamicResource ThumbCustom}"/>
+        <Setter Property="FontFamily" Value="Arial"/>
+        <Setter Property="FontSize" Value="14px"/>
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="IsHitTestVisible" Value="False"/>
+    </Style>
+
     <ControlTemplate x:Key="ThumbCustom" TargetType="{x:Type Thumb}">
         <Border Padding="{TemplateBinding Padding}"
                 Background="Transparent">
@@ -383,17 +410,6 @@
                      Fill="{TemplateBinding Background}" />
         </Border>
     </ControlTemplate>
-
-    <Style x:Key="GridViewColumnHeaderGripper" TargetType="Thumb">
-        <Setter Property="Width" Value="18" />
-        <Setter Property="Template" Value="{StaticResource ThumbCustom}"/>
-        <Setter Property="FontFamily" Value="Arial"/>
-        <Setter Property="FontSize" Value="14px"/>
-        <Setter Property="SnapsToDevicePixels" Value="True"/>
-        <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="BorderBrush" Value="Transparent"/>
-        <Setter Property="IsHitTestVisible" Value="False"/>
-    </Style>
 
     <!--ProgressBar-->
     <ControlTemplate x:Key="AnimatedProgessBarTemplate" TargetType="{x:Type ProgressBar}">

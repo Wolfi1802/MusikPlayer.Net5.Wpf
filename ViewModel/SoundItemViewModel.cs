@@ -90,11 +90,15 @@ namespace MusikPlayer.ViewModel
 
         private void UpdateView(string soundPath)
         {
-            if (!string.IsNullOrEmpty(soundPath))
+            if (!string.IsNullOrEmpty(soundPath) && this._reader != null)
             {
                 this._reader = new Mp3FileReader(soundPath);
                 this.DurationToShow = this._reader.TotalTime.ToString(this.Model.StringFormatDuration);
                 this.UpdateDurationDone = true;
+            }
+            else
+            {
+                //TODO[TS] LOGGER
             }
         }
 

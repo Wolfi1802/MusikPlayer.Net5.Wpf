@@ -3,6 +3,11 @@ TODO[TS]
 - Template für die Favoriten CheckBox (stern mit orang gelben inhalt wenn aktiv und weißem rand)
 - Scrollbar Template hinzugefügt
 
+[TS]MINOR Update View
+- Lauftext in der View und im ViewModel erstellt
+- Geringfügige Änderungen in der View was die Breite und Höhe betrifft
+
+
 [TS] 09.11.2021 Projekt Update
 - N.Audio dem Projekt hinzugefügt
 
