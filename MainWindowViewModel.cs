@@ -21,15 +21,20 @@ namespace MusikPlayer
     {
         public string Version_Title { get { return $"Wolfi MP3 Versoin: {VERSION_INFO}"; } }
 
-
+        private const double FONZ_SIZE_VALUE = 20d;
         private const string FILE_DATA_NAME = ".mp3";
         private const int DEFAULT_MSG_SHOW_TIME = 50000;
         private const int DEFAULT_VOLUME_VALUE = 20;
+        /*
+        MAJOR.MINOR.BUILD -> Major wenn sich z.B.was großes geändert hat (z.b.komplett neues Design) 
+            -> Minor wenn es etwas neues gibt(z.B.ein neues Features). 
+            Build kannst du für Bugfixes verwenden.Kann aber auch automatisch bei jedem kompilieren erzeugt werden bei nächtlichen Builds zum Beispiel*/
         /// <summary>
-        /// <para>Für jeden BugFix eine 0.0.X ändern</para>
-        /// <para>Für jedes Feature eine 0.X.0 ändern</para>
+        /// <para>MAJOR jedes Fette Update(neues Design) eine X.0.0 ändern</para>
+        /// <para>MINOR jedes Features eine 0.X.0 ändern</para>
+        /// <para>BUILD jeder BugFix eine 0.0.X ändern</para>
         /// </summary>
-        private const double VERSION_INFO = 1.1;
+        private const string VERSION_INFO = "1.2.0";
 
         private readonly List<string> mediaExtensions = new List<string> { FILE_DATA_NAME };
 
@@ -39,6 +44,8 @@ namespace MusikPlayer
         private FileDirector fileDirector;
         private SoundItemFactory soundItemFactory;
         private Config config { get { return Config.Instance(); } }
+
+
 
         public MainWindowViewModel()
         {
@@ -60,6 +67,9 @@ namespace MusikPlayer
 
             this.SetConfig();
             this.FillItemsSource();
+
+
+            this.RunTextAnimationDuration = new TimeSpan(0, 0, 0, 15).ToString();
 
         }
 
@@ -110,11 +120,39 @@ namespace MusikPlayer
             get { return this.MaxPlayTimer.ToString(@"hh\:mm\:ss"); ; }
         }
 
+        #region RunText
+
+        public double FontSize { get { return FONZ_SIZE_VALUE; } }
+
         public string CurrentTrackName
         {
             get => base.GetProperty<string>(nameof(this.CurrentTrackName));
-            set => base.SetProperty(nameof(this.CurrentTrackName), value);
+            set
+            {
+                this.SetRunTextWidths(value);
+                base.SetProperty(nameof(this.CurrentTrackName), value);
+            }
         }
+
+        public double RunTextFrom
+        {
+            get => base.GetProperty<double>(nameof(this.RunTextFrom));
+            set => base.SetProperty(nameof(this.RunTextFrom), value);
+        }
+
+        public double RunTextTo
+        {
+            get => base.GetProperty<double>(nameof(this.RunTextTo));
+            set => base.SetProperty(nameof(this.RunTextTo), value);
+        }
+
+        public string RunTextAnimationDuration
+        {
+            get => base.GetProperty<string>(nameof(this.RunTextAnimationDuration));
+            set => base.SetProperty(nameof(this.RunTextAnimationDuration), value);
+        }
+
+        #endregion
 
         public int ProgressBarMax
         {
@@ -157,7 +195,6 @@ namespace MusikPlayer
             set
             {
                 base.SetProperty(nameof(this.SearchWord), value);
-
                 this.StartSearch(value);
             }
         }
@@ -212,6 +249,39 @@ namespace MusikPlayer
         #endregion
 
         #region Methoden
+
+        #region LaufText Methoden
+
+        private void SetRunTextWidths(string value)
+        {
+            this.RunTextTo = this.CalculcateRunTextToWidth(value);
+            this.RunTextFrom = this.CalculcateRunTextToWidth(value, false);
+            base.OnPropertyChanged(nameof(this.RunTextFrom));
+            base.OnPropertyChanged(nameof(this.RunTextTo));
+        }
+
+        /// <summary>
+        /// Gibt anhand der länge des Wortes und der gebidneten Fontsize (Konstante) die Width zurück
+        /// </summary>
+        /// <param name="value">LaufText</param>
+        /// <param name="convertResult">
+        /// False-> Ergebniss wird zurück gegeben<para/>
+        /// True-> Ergebniss wird mit *-1 zurückgegeben<para/>
+        /// </param>
+        /// <returns></returns>
+        private double CalculcateRunTextToWidth(string value, bool convertResult = true)
+        {
+            double calculatedRunTextWidth = ((value.Length * FONZ_SIZE_VALUE) / 2) + FONZ_SIZE_VALUE;//das hintere dient als puffer
+
+            if (convertResult)
+                return calculatedRunTextWidth * -1;
+            else
+                return calculatedRunTextWidth;
+        }
+
+        #endregion
+
+
 
         public static void OnProgrammShutDown()
         {

@@ -12,7 +12,7 @@
         TextOptions.TextFormattingMode="Ideal"
         TextOptions.TextRenderingMode="Auto"
         x:Name="Window"
-        MinHeight="550" MinWidth="600" Height="550" Width="600" MaxHeight="550" MaxWidth="600" 
+        MinHeight="700" MinWidth="800" Height="700" Width="800" MaxHeight="700" MaxWidth="800" 
         Title="{Binding Version_Title}" WindowStartupLocation="CenterScreen">
 
     <WindowChrome.WindowChrome>
@@ -49,13 +49,18 @@
         <StackPanel x:Name="Header" Grid.Row="0" Grid.ColumnSpan="2" Panel.ZIndex="30" VerticalAlignment="Stretch" 
                     HorizontalAlignment="Stretch" MouseLeftButtonDown="OnMouseLeftButtonDown"
                     WindowChrome.IsHitTestVisibleInChrome="True" Background="{DynamicResource WindowHeaderBackground}">
-            <StackPanel Orientation="Horizontal">
-                <DockPanel Width="550">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="auto"/>
+                </Grid.ColumnDefinitions>
+                <DockPanel Grid.Column="0">
                     <Label Content="{Binding Version_Title}" Style="{StaticResource LabelHeaderStyle}"/>
                     <Label Content="{Binding ErrorMessageForUser}" Style="{StaticResource LabelHeaderStyle}"/>
                 </DockPanel>
 
-                <Button x:Name="Minimize" Width="24" FontSize="16" Height="24" Cursor="Hand" 
+                <Button x:Name="Minimize" Grid.Column="1" Width="24" FontSize="16" Height="24" Cursor="Hand" 
                         BorderBrush="Transparent" Click="OnMinimize" Background="Transparent" 
                         VerticalContentAlignment="Bottom" Content="_">
                     <Button.Style>
@@ -78,7 +83,7 @@
                     </Button.Style>
                 </Button>
 
-                <Button x:Name="Close" FontSize="16" Width="24" Height="24" Cursor="Hand" 
+                <Button x:Name="Close" Grid.Column="2" FontSize="16" Width="24" Height="24" Cursor="Hand" 
                         Click="OnClose" BorderBrush="Transparent" Background="Transparent"
                         Content="X">
                     <Button.Style>
@@ -100,20 +105,21 @@
                         </Style>
                     </Button.Style>
                 </Button>
-            </StackPanel>
+            </Grid>
         </StackPanel>
 
         <StackPanel x:Name="Body" Grid.Row="1" Grid.Column="0">
             <Grid Background="#FF343434">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="250"/>
-                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*" x:Name="TrackColumn"/>
                 </Grid.ColumnDefinitions>
 
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="460"/>
                 </Grid.RowDefinitions>
 
                 <Grid x:Name="AnimatedBackgroundPicture" Grid.Row="0" Grid.RowSpan="2" Grid.Column="0" >
@@ -147,62 +153,21 @@
                     </Ellipse>
                 </Grid>
 
-                <StackPanel x:Name="MusicList" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Margin="5">
-                    <ListView Name="ListView" SelectionMode="Single"
-                              ItemsSource="{Binding SoundItemsSourceFilter, UpdateSourceTrigger=PropertyChanged}" 
-                              SelectedValue="{Binding SoundSelectedItem, UpdateSourceTrigger=PropertyChanged}"
-                              Background="Transparent" Foreground="White" Height="300" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                <Grid x:Name="TrackStuff" Grid.Row="1" Grid.Column="1" >
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBox x:Name="SearchTrack" Grid.Row="0" Text="{Binding SearchWord, UpdateSourceTrigger=PropertyChanged}" BorderBrush="White" Foreground="White" BorderThickness="1" Margin="5" Background="Transparent"/>
 
-                        <ListView.View>
-                            <GridView AllowsColumnReorder="False">
-                                <GridView.ColumnHeaderContainerStyle>
-                                    <Style TargetType="GridViewColumnHeader">
-                                        <Setter Property="Background" Value="Transparent"/>
-                                        <Setter Property="Foreground" Value="White"/>
-                                        <Setter Property="Template" Value="{StaticResource GridViewColumnHeaderCustom}"/>
-                                    </Style>
-                                </GridView.ColumnHeaderContainerStyle>
+                    <TextBlock Grid.Row="1" Text="{Binding RepeatActiveForView}" Foreground="White" TextAlignment="Right" Margin="5"/>
 
-                                <GridViewColumn x:Name="SongTitel" Width="490">
-                                    <GridViewColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <DockPanel >
-                                                <CheckBox Style="{StaticResource FavoriteCheckBoxStyle}" IsChecked="{Binding IsFavorite, UpdateSourceTrigger=PropertyChanged}"/>
-                                                <Label Style="{StaticResource SoundItemLabelStyle}" Content="{Binding NameToShow, UpdateSourceTrigger=PropertyChanged}"/>
-                                            </DockPanel>
-                                        </DataTemplate>
-                                    </GridViewColumn.CellTemplate>
-                                    <Button Command="{Binding SortTitel}" Content="Song Titel" Style="{StaticResource InvisibleButtonStyle}" Width="{Binding ElementName=SongTitel, Path=Width}"/>
-                                </GridViewColumn>
-
-                                <GridViewColumn x:Name="Duration"  Width="70">
-                                    <GridViewColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <DockPanel >
-                                                <Label Style="{StaticResource SoundItemLabelStyle}" Content="{Binding DurationToShow, UpdateSourceTrigger=PropertyChanged}"/>
-                                            </DockPanel>
-                                        </DataTemplate>
-                                    </GridViewColumn.CellTemplate>
-                                    <Button Command="{Binding SortDuration}" Content="Dauer" Style="{StaticResource InvisibleButtonStyle}" Width="{Binding ElementName=Duration, Path=Width}"/>
-                                </GridViewColumn>
-                            </GridView>
-                        </ListView.View>
-                    </ListView>
-                </StackPanel>
-
-                <StackPanel x:Name="TrackStuff" Grid.Row="0" Grid.Column="1" >
-                    <DockPanel x:Name="SearchTrack">
-                        <TextBox Text="{Binding SearchWord, UpdateSourceTrigger=PropertyChanged}" BorderBrush="White" Foreground="White" BorderThickness="1" Margin="5" Background="Transparent"/>
-                    </DockPanel>
-
-                    <StackPanel x:Name="CurrentTrackInfos" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="10">
-                        <TextBlock Text="{Binding RepeatActiveForView}" Foreground="White" TextAlignment="Right"/>
-                        <TextBlock Text="{Binding CurrentTrackName}"  Foreground="White" TextAlignment="Right"/>
-                        <TextBlock x:Name="SPACER" Style="{StaticResource SoundItemTextBlockStyle}"/>
-                    </StackPanel>
-
-                </StackPanel>
-
+                </Grid>
+                
                 <StackPanel x:Name="MusicLabelPlayer" Grid.Row="1" Grid.Column="1"  Margin="0,10,0,10" VerticalAlignment="Bottom">
 
                     <StackPanel x:Name="ButtonPanel" Orientation="Horizontal">
@@ -259,6 +224,77 @@
                         </DockPanel>
                     </DockPanel>
                 </StackPanel>
+
+                <Canvas x:Name="TrackName" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Margin="5" Height="{Binding FontSize}">
+                    <TextBox Name="ShowtextBlock" Width="{Binding RunTextFrom}" FontSize="{Binding FontSize}" Text="{Binding CurrentTrackName,UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource RunTextTextBox}">
+                        <TextBox.Triggers>
+                            <EventTrigger RoutedEvent="TextBox.TextChanged">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation RepeatBehavior="Forever" AutoReverse="false"
+                                             Storyboard.TargetName="MyTranslateTransform" 
+                                             Storyboard.TargetProperty="X" From="{Binding ElementName=Window,Path=Width}" To="{Binding RunTextTo}" Duration="{Binding RunTextAnimationDuration}" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+
+                            <EventTrigger RoutedEvent="TextBox.Loaded">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation RepeatBehavior="Forever" AutoReverse="false"
+                                             Storyboard.TargetName="MyTranslateTransform" 
+                                             Storyboard.TargetProperty="X" From="{Binding ElementName=Window,Path=Width}" To="{Binding RunTextTo}" Duration="{Binding RunTextAnimationDuration}" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                        </TextBox.Triggers>
+
+                        <TextBox.RenderTransform>
+                            <TranslateTransform x:Name="MyTranslateTransform" X="0" Y="0" />
+                        </TextBox.RenderTransform>
+                    </TextBox>
+                </Canvas>
+
+                <ListView x:Name="MusicList" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Margin="5"
+                              SelectionMode="Single"
+                              ItemsSource="{Binding SoundItemsSourceFilter, UpdateSourceTrigger=PropertyChanged}" 
+                              SelectedValue="{Binding SoundSelectedItem, UpdateSourceTrigger=PropertyChanged}"
+                              Background="Transparent" Foreground="White" ScrollViewer.HorizontalScrollBarVisibility="Disabled" >
+                    <ListView.View>
+                        <GridView AllowsColumnReorder="False">
+                            <GridView.ColumnHeaderContainerStyle>
+                                <Style TargetType="GridViewColumnHeader">
+                                    <Setter Property="Background" Value="Transparent"/>
+                                    <Setter Property="Foreground" Value="White"/>
+                                    <Setter Property="Template" Value="{StaticResource GridViewColumnHeaderCustom}"/>
+                                </Style>
+                            </GridView.ColumnHeaderContainerStyle>
+
+                            <GridViewColumn x:Name="SongTitel" Width="700">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <DockPanel >
+                                            <CheckBox Style="{StaticResource FavoriteCheckBoxStyle}" IsChecked="{Binding IsFavorite, UpdateSourceTrigger=PropertyChanged}"/>
+                                            <Label Style="{StaticResource SoundItemLabelStyle}" Content="{Binding NameToShow, UpdateSourceTrigger=PropertyChanged}"/>
+                                        </DockPanel>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                                <Button Command="{Binding SortTitel}" Content="Song Titel" Style="{StaticResource InvisibleButtonStyle}" Width="{Binding ElementName=SongTitel, Path=Width}"/>
+                            </GridViewColumn>
+
+                            <GridViewColumn x:Name="Duration"  Width="70">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <DockPanel >
+                                            <Label Style="{StaticResource SoundItemLabelStyle}" Content="{Binding DurationToShow, UpdateSourceTrigger=PropertyChanged}"/>
+                                        </DockPanel>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                                <Button Command="{Binding SortDuration}" Content="Dauer" Style="{StaticResource InvisibleButtonStyle}" Width="{Binding ElementName=Duration, Path=Width}"/>
+                            </GridViewColumn>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
             </Grid>
         </StackPanel>
     </Grid>
