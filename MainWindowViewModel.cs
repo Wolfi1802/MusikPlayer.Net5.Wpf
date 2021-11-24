@@ -25,16 +25,12 @@ namespace MusikPlayer
         private const string FILE_DATA_NAME = ".mp3";
         private const int DEFAULT_MSG_SHOW_TIME = 50000;
         private const int DEFAULT_VOLUME_VALUE = 20;
-        /*
-        MAJOR.MINOR.BUILD -> Major wenn sich z.B.was großes geändert hat (z.b.komplett neues Design) 
-            -> Minor wenn es etwas neues gibt(z.B.ein neues Features). 
-            Build kannst du für Bugfixes verwenden.Kann aber auch automatisch bei jedem kompilieren erzeugt werden bei nächtlichen Builds zum Beispiel*/
         /// <summary>
         /// <para>MAJOR jedes Fette Update(neues Design) eine X.0.0 ändern</para>
         /// <para>MINOR jedes Features eine 0.X.0 ändern</para>
         /// <para>BUILD jeder BugFix eine 0.0.X ändern</para>
         /// </summary>
-        private const string VERSION_INFO = "1.2.0";
+        private const string VERSION_INFO = "2.2.0";
 
         private readonly List<string> mediaExtensions = new List<string> { FILE_DATA_NAME };
 
