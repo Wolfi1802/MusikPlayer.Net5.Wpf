@@ -119,17 +119,5 @@ namespace MusikPlayer
             else
                 this.OnMaximize(null, null);
         }
-
-
-        //private void MoveToCurserPosition()
-        //{
-        //    var x = System.Windows.Forms.Cursor.Position.X;
-        //    var y = System.Windows.Forms.Cursor.Position.Y;
-
-        //    this.Left = x - (this.ActualWidth / 2.5);
-        //    this.Top = y;
-
-        //}
-
     }
 }

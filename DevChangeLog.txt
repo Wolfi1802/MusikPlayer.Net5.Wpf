@@ -3,6 +3,18 @@ TODO[TS]
 - Template für die Favoriten CheckBox (stern mit orang gelben inhalt wenn aktiv und weißem rand)
 - Scrollbar Template hinzugefügt
 
+[TS]MAJOR Update Beta 1.0
+
+- Neues Design
+	-> Template für CheckBox
+	-> TabControl hinzugefügt
+	-> Buttons für Features hinzugefügt
+	-> Button für Einstellungen hinzugefügt
+
+- Neue Funktionen
+	-> Play button ist jetzt auch der Pause Button
+	-> Favoriten Liste erstell und einsehbar
+
 [TS]MINOR Update View
 - Lauftext in der View und im ViewModel erstellt
 - Geringfügige Änderungen in der View was die Breite und Höhe betrifft

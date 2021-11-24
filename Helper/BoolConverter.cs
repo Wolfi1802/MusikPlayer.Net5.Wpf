@@ -12,9 +12,9 @@ namespace MusikPlayer.Helper
         public static string ConvertBoolToString(bool value)
         {
             if (value)
-                return "Ja";
+                return "Aktiviert";
             else
-                return "Nein";
+                return "Inaktiv";
         }
     }
 }

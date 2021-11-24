@@ -12,7 +12,7 @@
         TextOptions.TextFormattingMode="Ideal"
         TextOptions.TextRenderingMode="Auto"
         x:Name="Window"
-        MinHeight="700" MinWidth="800" Height="700" Width="800" MaxHeight="700" MaxWidth="800" 
+        MinHeight="700" MinWidth="1000" Height="700" Width="1000" MaxHeight="700" MaxWidth="1000" 
         Title="{Binding Version_Title}" WindowStartupLocation="CenterScreen">
 
     <WindowChrome.WindowChrome>
@@ -32,6 +32,7 @@
             </ResourceDictionary.MergedDictionaries>
 
             <BitmapImage x:Key="MenuIcon" UriSource="pack://application:,,,/Resources/Icon.png" />
+            <BitmapImage x:Key="InfinityIcom" UriSource="pack://application:,,,/Resources/infinity.png" />
             <BitmapImage x:Key="MusicBanner01" UriSource="pack://application:,,,/Resources/Screenshot_6.png" />
             <BitmapImage x:Key="PictureBorder" UriSource="pack://application:,,,/Resources/Background.png" />
         </ResourceDictionary>
@@ -42,6 +43,7 @@
             <RowDefinition Height="24" />
             <RowDefinition />
         </Grid.RowDefinitions>
+
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
@@ -108,195 +110,224 @@
             </Grid>
         </StackPanel>
 
-        <StackPanel x:Name="Body" Grid.Row="1" Grid.Column="0">
-            <Grid Background="#FF343434">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="250"/>
-                    <ColumnDefinition Width="*" x:Name="TrackColumn"/>
-                </Grid.ColumnDefinitions>
+        <Grid x:Name="Body" Grid.Row="1" Grid.Column="0">
+            <Grid.Background>
+                <ImageBrush ImageSource="{StaticResource BackgroundPicture}" Stretch="Fill"/>
+            </Grid.Background>
 
+            <Grid.RowDefinitions >
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid x:Name="Features" IsEnabled="False" Grid.Row="0" Grid.Column="0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="460"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Button Content="Feature 1" Grid.Row="0" Grid.Column="0" Height="60" Width="60" Margin="10"/>
+                <Button Content="Feature 2" Grid.Row="1" Grid.Column="0" Height="60" Width="60" Margin="10"/>
+                <Button Content="Feature 3" Grid.Row="2" Grid.Column="0" Height="60" Width="60" Margin="10"/>
+                <Button Content="Feature 4" Grid.Row="3" Grid.Column="0" Height="60" Width="60" Margin="10"/>
+                <Button Content="Feature 5" Grid.Row="4" Grid.Column="0" Height="60" Width="60" Margin="10"/>
+                <Button Content="Einstellungen" Grid.Row="6" Grid.Column="0" Height="60" Width="60" Margin="10"/>
+            </Grid>
+
+            <Grid x:Name="MusicViews" Grid.Row="0" Grid.Column="1">
+                <Grid.RowDefinitions >
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
-                <Grid x:Name="AnimatedBackgroundPicture" Grid.Row="0" Grid.RowSpan="2" Grid.Column="0" >
-                    <Ellipse Style="{StaticResource EllipseStyle}" Stroke="Transparent">
-                        <Ellipse.Fill>
-                            <ImageBrush ImageSource="{StaticResource MusicBanner01}" Stretch="Fill" />
-                        </Ellipse.Fill>
-                    </Ellipse>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
 
-                    <Ellipse Style="{StaticResource EllipseStyle}">
-                        <Ellipse.Stroke>
-                            <ImageBrush ImageSource="{StaticResource PictureBorder}"/>
-                        </Ellipse.Stroke>
-                        <Ellipse.RenderTransform>
-                            <RotateTransform x:Name="Rotation" Angle="0"/>
-                        </Ellipse.RenderTransform>
-                        <Ellipse.Triggers>
-                            <EventTrigger RoutedEvent="Loaded">
-                                <BeginStoryboard>
-                                    <Storyboard RepeatBehavior="Forever">
-                                        <DoubleAnimation
+                <StackPanel Grid.Row="0" Grid.Column="0">
+                    <TextBox x:Name="SearchTrack"  Text="{Binding SearchWord, UpdateSourceTrigger=PropertyChanged}" BorderBrush="White" Foreground="White" BorderThickness="1" Margin="5" Background="Transparent"/>
+                    <TextBlock x:Name="ShowRepeatActive" Text="{Binding RepeatActiveForView}" Foreground="White" TextAlignment="Right" Margin="5"/>
+                </StackPanel>
+
+                <TabControl Grid.Row="1" Grid.Column="0" Background="Transparent">
+                    <TabItem>
+                        <TabItem.Header>
+                            <TextBlock Text="Aktueller Track Stuff"/>
+                        </TabItem.Header>
+
+                        <Grid x:Name="AllSounds" Grid.Row="0" Grid.Column="1" >
+                            <StackPanel>
+                                <ListView x:Name="MusicList" Height="{Binding ElementName=AllSounds,Path=ActualHeight}"
+                                    SelectionMode="Single"
+                                    ItemsSource="{Binding SoundItemsSourceFilter, UpdateSourceTrigger=PropertyChanged}" 
+                                    SelectedValue="{Binding SoundSelectedItem, UpdateSourceTrigger=PropertyChanged}"
+                                    Background="Transparent" Foreground="White" ScrollViewer.HorizontalScrollBarVisibility="Disabled" >
+                                    <ListView.View>
+                                        <GridView AllowsColumnReorder="False">
+                                            <GridView.ColumnHeaderContainerStyle>
+                                                <Style TargetType="GridViewColumnHeader">
+                                                    <Setter Property="Background" Value="Transparent"/>
+                                                    <Setter Property="Foreground" Value="White"/>
+                                                    <Setter Property="Template" Value="{StaticResource GridViewColumnHeaderCustom}"/>
+                                                </Style>
+                                            </GridView.ColumnHeaderContainerStyle>
+
+                                            <GridViewColumn x:Name="SongTitel">
+                                                <GridViewColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <DockPanel >
+                                                            <CheckBox Style="{StaticResource FavoriteCheckBoxStyle}" IsChecked="{Binding IsFavorite, UpdateSourceTrigger=PropertyChanged}"/>
+                                                            <Label Style="{StaticResource SoundItemLabelStyle}" Content="{Binding NameToShow, UpdateSourceTrigger=PropertyChanged}"/>
+                                                        </DockPanel>
+                                                    </DataTemplate>
+                                                </GridViewColumn.CellTemplate>
+                                                <Button Command="{Binding SortTitel}" Content="Song Titel" Style="{StaticResource InvisibleButtonStyle}" Width="{Binding ElementName=SongTitel, Path=Width}"/>
+                                            </GridViewColumn>
+
+                                            <GridViewColumn x:Name="Duration">
+                                                <GridViewColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <DockPanel >
+                                                            <Label Style="{StaticResource SoundItemLabelStyle}" Content="{Binding DurationToShow, UpdateSourceTrigger=PropertyChanged}"/>
+                                                        </DockPanel>
+                                                    </DataTemplate>
+                                                </GridViewColumn.CellTemplate>
+                                                <Button Command="{Binding SortDuration}" Content="Dauer" Style="{StaticResource InvisibleButtonStyle}" Width="{Binding ElementName=Duration, Path=Width}"/>
+                                            </GridViewColumn>
+                                        </GridView>
+                                    </ListView.View>
+                                </ListView>
+                            </StackPanel>
+                        </Grid>
+                    </TabItem>
+
+                    <TabItem>
+                        <TabItem.Header>
+                            <TextBlock Text="Favoriten Stuff"/>
+                        </TabItem.Header>
+                        <Grid x:Name="AnimatedBackgroundPicture" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <Ellipse Style="{StaticResource EllipseStyle}" Stroke="Transparent">
+                                <Ellipse.Fill>
+                                    <ImageBrush ImageSource="{StaticResource MusicBanner01}" Stretch="Fill" />
+                                </Ellipse.Fill>
+                            </Ellipse>
+
+                            <Ellipse Style="{StaticResource EllipseStyle}">
+                                <Ellipse.Stroke>
+                                    <ImageBrush ImageSource="{StaticResource PictureBorder}"/>
+                                </Ellipse.Stroke>
+                                <Ellipse.RenderTransform>
+                                    <RotateTransform x:Name="Rotation" Angle="0"/>
+                                </Ellipse.RenderTransform>
+                                <Ellipse.Triggers>
+                                    <EventTrigger RoutedEvent="Loaded">
+                                        <BeginStoryboard>
+                                            <Storyboard RepeatBehavior="Forever">
+                                                <DoubleAnimation
                                         Storyboard.TargetName="Rotation"
                                         Storyboard.TargetProperty="Angle"
                                         From="0"
                                         To="360"
                                         Duration="0:0:30"/>
-                                    </Storyboard>
-                                </BeginStoryboard>
-                            </EventTrigger>
-                        </Ellipse.Triggers>
-                    </Ellipse>
-                </Grid>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </EventTrigger>
+                                </Ellipse.Triggers>
+                            </Ellipse>
+                        </Grid>
+                    </TabItem>
+                </TabControl>
 
-                <Grid x:Name="TrackStuff" Grid.Row="1" Grid.Column="1" >
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
+            </Grid>
+
+            <Grid x:Name="CurrentTrackLine" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="5" Background="Transparent">
+                <Grid.RowDefinitions >
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Grid x:Name="TrackController">
+                    <Grid.RowDefinitions >
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
+
                     <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <TextBox x:Name="SearchTrack" Grid.Row="0" Text="{Binding SearchWord, UpdateSourceTrigger=PropertyChanged}" BorderBrush="White" Foreground="White" BorderThickness="1" Margin="5" Background="Transparent"/>
 
-                    <TextBlock Grid.Row="1" Text="{Binding RepeatActiveForView}" Foreground="White" TextAlignment="Right" Margin="5"/>
+                    <TextBlock Grid.Column="0" Grid.Row="0" Margin="10,0,5,0" Text="{Binding FormatedCurrentPlayTimer,UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Foreground="White"/>
 
-                </Grid>
-                
-                <StackPanel x:Name="MusicLabelPlayer" Grid.Row="1" Grid.Column="1"  Margin="0,10,0,10" VerticalAlignment="Bottom">
+                    <ProgressBar x:Name="SoundDuration" Grid.Column="1" Grid.Row="0"  Maximum="{Binding ProgressBarMax}" Value="{Binding ProgressBarValue}" Style="{StaticResource ProgressBarAnimatedStyle}" MinWidth="120" Margin="5,0,5,0" />
 
-                    <StackPanel x:Name="ButtonPanel" Orientation="Horizontal">
-                        <Button Command="{Binding StartMusic}" Width="50" Margin="0,5,5,5" Style="{DynamicResource ButtonStyle}" ToolTip="Play selected Song">
-                            <Button.Content>
-                                <Path Fill="Black" Data="M 1,1 L 20,10 L 1,18"/>
-                            </Button.Content>
-                        </Button>
+                    <Button Grid.Column="2" Grid.Row="0" Command="{Binding StartMusic}" Width="50" Margin="0,5,5,5" Style="{DynamicResource ButtonStyle}" ToolTip="Play selected Song">
+                        <Button.Content>
+                            <Path Fill="Black" Data="M 1,1 L 20,10 L 1,18"/>
+                        </Button.Content>
+                    </Button>
 
-                        <Button Command="{Binding BreakMusic}" Width="50" Style="{DynamicResource ButtonStyle}" ToolTip="Break for current Song">
-                            <Button.Content>
-                                <DockPanel>
-                                    <Path Fill="Black" Data="M 0,1 L 2,1 L 2,18 L 0,18"/>
-                                    <Path Fill="Black" Data="M 2,1 L 4,1 L 4,18 L 2,18"/>
-                                </DockPanel>
-                            </Button.Content>
-                        </Button>
+                    <Button Grid.Column="3" Grid.Row="0" Command="{Binding RepeatMusic}" Width="50" Style="{DynamicResource ButtonStyle}" ToolTip="Repeat On/Off">
+                        <Button.Content>
+                            <Image Source="{StaticResource InfinityIcom}" Stretch="Fill"/>
+                        </Button.Content>
+                    </Button>
 
-                        <Button Command="{Binding StopMusic}" Width="50" Style="{DynamicResource ButtonStyle}" ToolTip="Stop current Song">
-                            <Button.Content>
-                                <Path Fill="Black" Data="M 0,1 L 18,1 L 18,18 L 0,18"/>
-                            </Button.Content>
-                        </Button>
-
-                        <Button Command="{Binding AddMusic}" Width="50" Style="{DynamicResource ButtonStyle}" ToolTip="Add new Song">
-                            <Button.Content>
-                                <Grid>
-                                    <Path Fill="Black" Data="M 1,11 L 1,7 L 18,7 L 18,11 "/>
-                                    <Path Fill="Black" Data="M 11,1 L 7,1 L 7,18 L 11,18"/>
-                                </Grid>
-                            </Button.Content>
-                        </Button>
-
-                        <Button Command="{Binding RepeatMusic}" Width="50" Style="{DynamicResource ButtonStyle}" ToolTip="Repeat On/Off">
-                            <Button.Content>
-                                <Grid>
-                                    <Path Fill="red" Data="M 1,11 L 1,7 L 18,7 L 18,11 "/>
-                                    <Path Fill="red" Data="M 11,1 L 7,1 L 7,18 L 11,18"/>
-                                </Grid>
-                            </Button.Content>
-                        </Button>
-
-                    </StackPanel>
-
-                    <DockPanel>
-                        <DockPanel x:Name="SongDuration" Margin="0,0,5,0" MinHeight="30">
-                            <TextBlock Text="{Binding FormatedCurrentPlayTimer,UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Foreground="White"/>
-                            <ProgressBar x:Name="SoundDuration" Maximum="{Binding ProgressBarMax}" Value="{Binding ProgressBarValue}" Style="{StaticResource ProgressBarAnimatedStyle}" MinWidth="150" Margin="5,0,5,0" />
-                            <TextBlock Text="{Binding FormatedMaxPlayTimer,UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Foreground="White"/>
-                        </DockPanel>
-
-                        <DockPanel x:Name="SoundVolume" Margin="5,0,0,0" MinHeight="30">
-                            <Slider x:Name="SoundSlider" MinWidth="70" Value="{Binding SoundVolume}" Minimum="0" Maximum="100" Margin="0,5,0,5"></Slider>
-                        </DockPanel>
+                    <DockPanel x:Name="SoundVolume" Grid.Column="4" Grid.Row="0" Margin="5,0,0,0">
+                        <Slider x:Name="SoundSlider" MinWidth="110" Value="{Binding SoundVolume}" Minimum="0" Maximum="100" Margin="0,5,0,5" />
                     </DockPanel>
-                </StackPanel>
 
-                <Canvas x:Name="TrackName" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Margin="5" Height="{Binding FontSize}">
-                    <TextBox Name="ShowtextBlock" Width="{Binding RunTextFrom}" FontSize="{Binding FontSize}" Text="{Binding CurrentTrackName,UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource RunTextTextBox}">
-                        <TextBox.Triggers>
-                            <EventTrigger RoutedEvent="TextBox.TextChanged">
-                                <BeginStoryboard>
-                                    <Storyboard>
-                                        <DoubleAnimation RepeatBehavior="Forever" AutoReverse="false"
+                    <Canvas x:Name="TrackName" Grid.Row="1" Grid.Column="0" Margin="0,10,0,10" Height="{Binding FontSize}">
+                        <TextBox Name="ShowTextBlock" Width="{Binding RunTextFrom}" FontSize="{Binding FontSize}" Text="{Binding CurrentTrackName,UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource RunTextTextBox}">
+                            <TextBox.Triggers>
+                                <EventTrigger RoutedEvent="TextBox.TextChanged">
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation RepeatBehavior="Forever" AutoReverse="false"
                                              Storyboard.TargetName="MyTranslateTransform" 
                                              Storyboard.TargetProperty="X" From="{Binding ElementName=Window,Path=Width}" To="{Binding RunTextTo}" Duration="{Binding RunTextAnimationDuration}" />
-                                    </Storyboard>
-                                </BeginStoryboard>
-                            </EventTrigger>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>
 
-                            <EventTrigger RoutedEvent="TextBox.Loaded">
-                                <BeginStoryboard>
-                                    <Storyboard>
-                                        <DoubleAnimation RepeatBehavior="Forever" AutoReverse="false"
+                                <EventTrigger RoutedEvent="TextBox.Loaded">
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation RepeatBehavior="Forever" AutoReverse="false"
                                              Storyboard.TargetName="MyTranslateTransform" 
                                              Storyboard.TargetProperty="X" From="{Binding ElementName=Window,Path=Width}" To="{Binding RunTextTo}" Duration="{Binding RunTextAnimationDuration}" />
-                                    </Storyboard>
-                                </BeginStoryboard>
-                            </EventTrigger>
-                        </TextBox.Triggers>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>
+                            </TextBox.Triggers>
 
-                        <TextBox.RenderTransform>
-                            <TranslateTransform x:Name="MyTranslateTransform" X="0" Y="0" />
-                        </TextBox.RenderTransform>
-                    </TextBox>
-                </Canvas>
+                            <TextBox.RenderTransform>
+                                <TranslateTransform x:Name="MyTranslateTransform" X="0" Y="0" />
+                            </TextBox.RenderTransform>
+                        </TextBox>
+                    </Canvas>
+                </Grid>
 
-                <ListView x:Name="MusicList" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Margin="5"
-                              SelectionMode="Single"
-                              ItemsSource="{Binding SoundItemsSourceFilter, UpdateSourceTrigger=PropertyChanged}" 
-                              SelectedValue="{Binding SoundSelectedItem, UpdateSourceTrigger=PropertyChanged}"
-                              Background="Transparent" Foreground="White" ScrollViewer.HorizontalScrollBarVisibility="Disabled" >
-                    <ListView.View>
-                        <GridView AllowsColumnReorder="False">
-                            <GridView.ColumnHeaderContainerStyle>
-                                <Style TargetType="GridViewColumnHeader">
-                                    <Setter Property="Background" Value="Transparent"/>
-                                    <Setter Property="Foreground" Value="White"/>
-                                    <Setter Property="Template" Value="{StaticResource GridViewColumnHeaderCustom}"/>
-                                </Style>
-                            </GridView.ColumnHeaderContainerStyle>
-
-                            <GridViewColumn x:Name="SongTitel" Width="700">
-                                <GridViewColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <DockPanel >
-                                            <CheckBox Style="{StaticResource FavoriteCheckBoxStyle}" IsChecked="{Binding IsFavorite, UpdateSourceTrigger=PropertyChanged}"/>
-                                            <Label Style="{StaticResource SoundItemLabelStyle}" Content="{Binding NameToShow, UpdateSourceTrigger=PropertyChanged}"/>
-                                        </DockPanel>
-                                    </DataTemplate>
-                                </GridViewColumn.CellTemplate>
-                                <Button Command="{Binding SortTitel}" Content="Song Titel" Style="{StaticResource InvisibleButtonStyle}" Width="{Binding ElementName=SongTitel, Path=Width}"/>
-                            </GridViewColumn>
-
-                            <GridViewColumn x:Name="Duration"  Width="70">
-                                <GridViewColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <DockPanel >
-                                            <Label Style="{StaticResource SoundItemLabelStyle}" Content="{Binding DurationToShow, UpdateSourceTrigger=PropertyChanged}"/>
-                                        </DockPanel>
-                                    </DataTemplate>
-                                </GridViewColumn.CellTemplate>
-                                <Button Command="{Binding SortDuration}" Content="Dauer" Style="{StaticResource InvisibleButtonStyle}" Width="{Binding ElementName=Duration, Path=Width}"/>
-                            </GridViewColumn>
-                        </GridView>
-                    </ListView.View>
-                </ListView>
             </Grid>
-        </StackPanel>
+        </Grid>
     </Grid>
-
 </Window>
