@@ -19,7 +19,7 @@ namespace MusikPlayer
 {
     public class MainWindowViewModel : ViewModelBase
     {
-        public string Version_Title { get { return $"Wolfi MP3 Versoin: {VERSION_INFO}"; } }
+        public string Version_Title { get { return $"Wolfi MP3 Version: {VERSION_INFO}"; } }
 
         private const double FONZ_SIZE_VALUE = 20d;
         private const string FILE_DATA_NAME = ".mp3";
@@ -39,6 +39,8 @@ namespace MusikPlayer
         private Sorting currentSort;
         private FileDirector fileDirector;
         private SoundItemFactory soundItemFactory;
+        private SoundItemViewModel lastPlaySoundItem;
+        private SoundItemViewModel currentPlaySoundItem;
         private Config config { get { return Config.Instance(); } }
 
 
@@ -51,7 +53,7 @@ namespace MusikPlayer
 
             this.timer = new DispatcherTimer();
             this.timer.Interval = TimeSpan.FromSeconds(0.5);
-            this.timer.Tick += timer_Tick;
+            this.timer.Tick += OnTimerTick;
 
             if (SoundItemsSource == null)
                 SoundItemsSource = new ObservableCollection<SoundItemViewModel>();
@@ -95,25 +97,9 @@ namespace MusikPlayer
             }
         }
 
-        public TimeSpan MaxPlayTimer
-        {
-            get => base.GetProperty<TimeSpan>(nameof(this.MaxPlayTimer));
-            set
-            {
-                base.SetProperty(nameof(this.MaxPlayTimer), value);
-                base.SetProperty(nameof(this.ProgressBarMax), TimeSpanConverter.GetSecondsFromTimeSpan(value));
-                base.SetProperty(nameof(this.FormatedMaxPlayTimer), value);
-            }
-        }
-
         public string FormatedCurrentPlayTimer
         {
             get { return this.CurrentPlayTimer.ToString(@"hh\:mm\:ss"); ; }
-        }
-
-        public string FormatedMaxPlayTimer
-        {
-            get { return this.MaxPlayTimer.ToString(@"hh\:mm\:ss"); ; }
         }
 
         #region RunText
@@ -211,6 +197,22 @@ namespace MusikPlayer
             get { return $"Wiederholung Aktiv: {BoolConverter.ConvertBoolToString(this.RepeatActive)}"; }
         }
 
+        public bool ShuffleActive
+        {
+            get => base.GetProperty<bool>(nameof(this.ShuffleActive));
+            set
+            {
+                base.SetProperty(nameof(this.ShuffleActive), value);
+                base.OnPropertyChanged(nameof(this.ShuffleActiveForView));
+
+            }
+        }
+
+        public string ShuffleActiveForView
+        {
+            get { return $"Zufalls Sequenz Aktiv: {BoolConverter.ConvertBoolToString(this.ShuffleActive)}"; }
+        }
+
         public string ErrorMessageForUser
         {
             get => base.GetProperty<string>(nameof(this.ErrorMessageForUser));
@@ -276,8 +278,6 @@ namespace MusikPlayer
         }
 
         #endregion
-
-
 
         public static void OnProgrammShutDown()
         {
@@ -396,18 +396,32 @@ namespace MusikPlayer
             this.UpdateDurationOnViewTask();
         }
 
-        private void ManageStartMusic()
+        private void ManageStartMusic(SoundItemViewModel soundSelectedItem)
         {
-            this.mediaPlayer.Open(this.SoundSelectedItem.Model.Uri);
-
-            this.SoundSelectedItem.SongHasEndByPlayer = false;
-            this.CurrentTrackName = this.SoundSelectedItem.NameToShow;
+            this.CurrentTrackName = soundSelectedItem.NameToShow;
             this.SetMediaPlayerVolume(this.SoundVolume);
+            this.mediaPlayer.MediaFailed += (o, e) =>
+            {
+
+                //TODO ERROR LOG
+                System.Diagnostics.Debug.WriteLine("FEHLER PASSIERT : " + e.ErrorException);
+            };
+            this.mediaPlayer.MediaEnded += (o, e) =>
+            {
+                if (!this.CheckShuffle(soundSelectedItem))//wenn shuffle false dann check repeat
+                    this.CheckRepeat(soundSelectedItem);
+            };
+            this.mediaPlayer.MediaOpened += (o, e) =>
+            {
+                this.ProgressBarMax = (int)this.mediaPlayer.NaturalDuration.TimeSpan.TotalSeconds;
+            };
+
+            this.mediaPlayer.Open(soundSelectedItem.Model.Uri);
+
             this.mediaPlayer.Play();
             this.timer.Start();
 
             this.UpdateTimerUnit();
-
         }
 
         private void UpdateTimerUnit()
@@ -415,9 +429,6 @@ namespace MusikPlayer
             try
             {
                 this.CurrentPlayTimer = this.mediaPlayer.Position;
-
-                if (this.mediaPlayer.NaturalDuration.HasTimeSpan)
-                    this.MaxPlayTimer = this.mediaPlayer.NaturalDuration.TimeSpan;
             }
             catch (Exception ex)
             {
@@ -425,18 +436,37 @@ namespace MusikPlayer
             }
         }
 
-        private void CheckRepeat()//TODO refactoring...wirft viele exceptions und das is fies
+        private void CheckRepeat(SoundItemViewModel soundSelectedItem)
         {
-            if (this.SoundSelectedItem == null)
+            if (soundSelectedItem == null)
                 throw new NullReferenceException($"{nameof(MainWindowViewModel)},{nameof(CheckRepeat)},{nameof(SoundSelectedItem)} ist null");
 
-            var maxDuration = (int)this.SoundSelectedItem.Model.Duration.TotalSeconds;
-            var currentDuration = (int)this.mediaPlayer.Position.TotalSeconds;
-
-            if (maxDuration.Equals(currentDuration) && this.RepeatActive)
+            if (this.RepeatActive)
             {
-                this.TryRepeatCurrentSong();
+                this.TryRepeatCurrentSong(soundSelectedItem);
             }
+        }
+
+        private bool CheckShuffle(SoundItemViewModel soundSelectedItem)
+        {
+            if (this.ShuffleActive)
+            {
+                Random random = new Random();
+                bool whileActive = true;
+
+                while (whileActive)
+                {
+                    var randomNumber = random.Next(0, SoundItemsSource.Count);
+                    if (SoundItemsSource[randomNumber] != soundSelectedItem)
+                    {
+                        this.ManageStartMusic(SoundItemsSource[randomNumber]);
+                        whileActive = false;
+                        return true;
+                    }
+                }
+
+            }
+            return false;
         }
 
         private void SetMediaPlayerVolume(int value)
@@ -522,21 +552,11 @@ namespace MusikPlayer
             this.SortItemsListBy(Sorting.Ascending, SortableListViewHeader.Duration);
         }
 
-        private bool TryRepeatCurrentSong()
+        private bool TryRepeatCurrentSong(SoundItemViewModel soundSelectedItem)
         {
             try
             {
-                var maxDuration = (int)this.SoundSelectedItem.Model.Duration.TotalSeconds;
-                var currentDuration = (int)this.mediaPlayer.Position.TotalSeconds;
-
-                if (maxDuration.Equals(currentDuration) || SoundSelectedItem.SongHasEndByPlayer)
-                {
-                    this.ManageStartMusic();
-                }
-                else
-                {
-                    throw new Exception($"Song still Playing=> {this.CurrentPlayTimer}/{this.MaxPlayTimer}");
-                }
+                this.ManageStartMusic(soundSelectedItem);
             }
             catch (Exception ex)
             {
@@ -550,31 +570,12 @@ namespace MusikPlayer
 
         #region Commands + Events 
 
-        private void OnStartMusic()
+        private void OnStartMusic(SoundItemViewModel soundItemViewModel)
         {
-            try
-            {
-                if (this.SoundSelectedItem == null)
-                    return;
+            if (soundItemViewModel == null)
+                throw new NullReferenceException($"{nameof(MainWindowViewModel)},{nameof(OnStartMusic)},{nameof(soundItemViewModel)} ist null!");
 
-                if (this.SoundSelectedItem.IsBreak)
-                {
-                    this.OnBreakMusic();
-                }
-
-                if (this.mediaPlayer.Source != SoundSelectedItem.Model.Uri)
-                {
-                    this.ManageStartMusic();
-                }
-                else
-                {
-                    this.TryRepeatCurrentSong();
-                }
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"{nameof(MainWindowViewModel)},{nameof(this.OnStartMusic)}, {ex}");
-            }
+            this.ManageStartMusic(soundItemViewModel);
         }
 
         private void OnBreakMusic()
@@ -599,22 +600,12 @@ namespace MusikPlayer
             }
         }
 
-        private void OnStopMusic()
-        {
-            if (this.mediaPlayer.HasAudio)
-            {
-                SoundSelectedItem.SongHasEndByPlayer = true;
-                this.mediaPlayer.Stop();
-                this.timer.Stop();
-                this.UpdateTimerUnit();
-            }
-        }
-
         public ICommand StartMusic => new RelayCommand(o =>
         {
             try
             {
-                this.OnStartMusic();
+                if (o is SoundItemViewModel sivm)
+                    this.OnStartMusic(sivm);
             }
             catch (Exception ex)
             {
@@ -634,37 +625,25 @@ namespace MusikPlayer
             }
         });
 
-        public ICommand StopMusic => new RelayCommand(o =>
-        {
-            try
-            {
-                this.OnStopMusic();
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine(ex);
-            }
-        });
-
-        public ICommand AddMusic => new RelayCommand(o =>
-        {
-            try
-            {
-                string filePath = fileDirector.GetFilePath("Bitte wählen Sie ihre Mp3 Datei aus.", $"MP3 files(*.mp3) | *{FILE_DATA_NAME}");
-                this.AddSongBy(filePath);
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine(ex);
-            }
-        });
-
         public ICommand RepeatMusic => new RelayCommand(o =>
         {
             if (this.RepeatActive)
                 this.RepeatActive = false;
             else
                 this.RepeatActive = true;
+        });
+
+        public ICommand ShuffleMusic => new RelayCommand(o =>
+        {
+            if (this.ShuffleActive)
+                this.ShuffleActive = false;
+            else
+                this.ShuffleActive = true;
+        });
+
+        public ICommand OpenSettings => new DelegateCommand(() =>
+        {
+            System.Diagnostics.Debug.WriteLine("Settings open");
         });
 
         #region SortColumns Commands
@@ -701,12 +680,11 @@ namespace MusikPlayer
 
         #endregion
 
-        private void timer_Tick(object sender, EventArgs e)
+        private void OnTimerTick(object sender, EventArgs e)
         {
             try
             {
                 this.UpdateTimerUnit();
-                this.CheckRepeat();
             }
             catch (Exception ex)
             {

@@ -14,7 +14,7 @@ namespace MusikPlayer.Helper
             if (value)
                 return "Aktiviert";
             else
-                return "Inaktiv";
+                return "Deaktiviert";
         }
     }
 }

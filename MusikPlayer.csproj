@@ -12,6 +12,8 @@
     <None Remove="Resources\icon.png" />
     <None Remove="Resources\infinity.png" />
     <None Remove="Resources\Screenshot_6.png" />
+    <None Remove="Resources\Settings.png" />
+    <None Remove="Resources\shuffle.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -23,6 +25,8 @@
     <Resource Include="Resources\icon.png" />
     <Resource Include="Resources\infinity.png" />
     <Resource Include="Resources\Screenshot_6.png" />
+    <Resource Include="Resources\Settings.png" />
+    <Resource Include="Resources\shuffle.png" />
   </ItemGroup>
 
   <ItemGroup>

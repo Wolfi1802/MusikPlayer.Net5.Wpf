@@ -1,17 +1,26 @@
 TODO[TS]
 - Ladebildschirm
-- Template für die Favoriten CheckBox (stern mit orang gelben inhalt wenn aktiv und weißem rand)
 - Scrollbar Template hinzugefügt
+
+[TS]MAJOR Update Beta 2.0
+- Neue Funktionen:
+	-> Shuffle Button ermöglicht eine Zufallswiederholung von Songs
+
+- Neues Design:
+	-> Template für CheckBox
+
+-BugFixes:
+	->Song Duration wurde nicht mehr ermitteln, wenn keine Datei vorhanden ist.
 
 [TS]MAJOR Update Beta 1.0
 
-- Neues Design
+- Neues Design:
 	-> Template für CheckBox
 	-> TabControl hinzugefügt
 	-> Buttons für Features hinzugefügt
 	-> Button für Einstellungen hinzugefügt
 
-- Neue Funktionen
+- Neue Funktionen:
 	-> Play button ist jetzt auch der Pause Button
 	-> Favoriten Liste erstell und einsehbar
 

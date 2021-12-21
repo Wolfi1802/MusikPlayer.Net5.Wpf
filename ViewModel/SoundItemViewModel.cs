@@ -76,21 +76,24 @@ namespace MusikPlayer.ViewModel
             set => base.SetProperty(nameof(this.IsBreak), value);
         }
 
+        /// <summary>
+        /// TODO[TS] TESTEN!
+        /// </summary>
+        public bool IsAbleToBreak
+        {
+            get => base.GetProperty<bool>(nameof(this.IsAbleToBreak));
+            set => base.SetProperty(nameof(this.IsAbleToBreak), value);
+        }
+
         public bool UpdateDurationDone
         {
             get => base.GetProperty<bool>(nameof(this.UpdateDurationDone));
             set => base.SetProperty(nameof(this.UpdateDurationDone), value);
         }
 
-        public bool SongHasEndByPlayer
-        {
-            get => base.GetProperty<bool>(nameof(this.SongHasEndByPlayer));
-            set => base.SetProperty(nameof(this.SongHasEndByPlayer), value);
-        }
-
         private void UpdateView(string soundPath)
         {
-            if (!string.IsNullOrEmpty(soundPath) && this._reader != null)
+            if (!string.IsNullOrEmpty(soundPath) && this._reader == null)
             {
                 this._reader = new Mp3FileReader(soundPath);
                 this.DurationToShow = this._reader.TotalTime.ToString(this.Model.StringFormatDuration);
