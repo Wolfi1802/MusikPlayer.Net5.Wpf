@@ -31,14 +31,43 @@
     <!--checkbox-->
     <Style x:Key="FavoriteCheckBoxStyle" TargetType="{x:Type CheckBox}">
         <Setter Property="Height" Value="23"/>
+        <Setter Property="Width" Value="23"/>
         <Setter Property="FontFamily" Value="Arial"/>
         <Setter Property="FontSize" Value="14"/>
         <Setter Property="HorizontalAlignment" Value="Center"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="Margin" Value="5"/>
-        <Setter Property="BorderBrush" Value="Silver"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
         <Setter Property="BorderThickness" Value="1"/>
-        <!--TODO template hier rein-->
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type CheckBox}">
+                    <Border BorderBrush="{TemplateBinding BorderBrush}"
+                            Height="{TemplateBinding Height}" 
+                            Width="{TemplateBinding Width}"
+                            BorderThickness="{TemplateBinding BorderThickness}">
+                        <Grid >
+                            <Grid.Background>
+                                <SolidColorBrush Color="Transparent"/>
+                            </Grid.Background>
+                            <Path x:Name="Click" Fill="Black" 
+                                  Data="M 9,0 L 7,6 L 0,6 L 6,11 L 4,17 L 9,12 L 14,17 L 12,11 L 18,6 L 11,6 L 9,0"/>
+                            <ContentPresenter Content="{TemplateBinding Content}"/>
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="true">
+                            <Setter TargetName="Click" Property="Fill" Value="Yellow" />
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="False">
+                            <Setter TargetName="Click" Property="Fill" Value="white"/>
+                            <Setter TargetName="Click" Property="Opacity" Value="0.5"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
 
     <!--Ellipse-->
@@ -107,7 +136,7 @@
 
             <Trigger Property="IsEnabled" Value="False">
                 <Setter Property="Opacity" TargetName="grid" Value="0.80"/>
-                <Setter Property="Background" TargetName="border" Value="lightgray"/>
+                <Setter Property="Background" TargetName="border" Value="darkgray"/>
             </Trigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
@@ -163,7 +192,7 @@
             </Setter.Value>
         </Setter>
     </Style>
-    
+
     <!--progressbar-->
     <Style x:Key="ProgressBarAnimatedStyle" TargetType="{x:Type ProgressBar}">
         <Setter Property="Template" Value="{DynamicResource AnimatedProgessBarTemplate}">

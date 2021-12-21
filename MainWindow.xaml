@@ -32,9 +32,11 @@
             </ResourceDictionary.MergedDictionaries>
 
             <BitmapImage x:Key="MenuIcon" UriSource="pack://application:,,,/Resources/Icon.png" />
-            <BitmapImage x:Key="InfinityIcom" UriSource="pack://application:,,,/Resources/infinity.png" />
+            <BitmapImage x:Key="InfinityIcon" UriSource="pack://application:,,,/Resources/infinity.png" />
+            <BitmapImage x:Key="ShuffleIcon" UriSource="pack://application:,,,/Resources/shuffle.png" />
             <BitmapImage x:Key="MusicBanner01" UriSource="pack://application:,,,/Resources/Screenshot_6.png" />
             <BitmapImage x:Key="PictureBorder" UriSource="pack://application:,,,/Resources/Background.png" />
+            <BitmapImage x:Key="SettingsIcon" UriSource="pack://application:,,,/Resources/Settings.png" />
         </ResourceDictionary>
     </Window.Resources>
 
@@ -125,7 +127,7 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <Grid x:Name="Features" IsEnabled="False" Grid.Row="0" Grid.Column="0">
+            <Grid x:Name="Features" Grid.Row="0" Grid.Column="0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
@@ -138,12 +140,16 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <Button Content="Feature 1" Grid.Row="0" Grid.Column="0" Height="60" Width="60" Margin="10"/>
-                <Button Content="Feature 2" Grid.Row="1" Grid.Column="0" Height="60" Width="60" Margin="10"/>
-                <Button Content="Feature 3" Grid.Row="2" Grid.Column="0" Height="60" Width="60" Margin="10"/>
-                <Button Content="Feature 4" Grid.Row="3" Grid.Column="0" Height="60" Width="60" Margin="10"/>
-                <Button Content="Feature 5" Grid.Row="4" Grid.Column="0" Height="60" Width="60" Margin="10"/>
-                <Button Content="Einstellungen" Grid.Row="6" Grid.Column="0" Height="60" Width="60" Margin="10"/>
+                <Button Content="Feature 1" Grid.Row="0" Grid.Column="0" Height="60" Width="60" Margin="10" IsEnabled="False"/>
+                <Button Content="Feature 2" Grid.Row="1" Grid.Column="0" Height="60" Width="60" Margin="10" IsEnabled="False"/>
+                <Button Content="Feature 3" Grid.Row="2" Grid.Column="0" Height="60" Width="60" Margin="10" IsEnabled="False"/>
+                <Button Content="Feature 4" Grid.Row="3" Grid.Column="0" Height="60" Width="60" Margin="10" IsEnabled="False"/>
+                <Button Content="Feature 5" Grid.Row="4" Grid.Column="0" Height="60" Width="60" Margin="10" IsEnabled="False"/>
+                <Button Grid.Row="6" Grid.Column="0" Height="60" Width="60" Margin="10" Command="{Binding OpenSettings}" Style="{StaticResource InvisibleButtonStyle}" IsEnabled="False">
+                    <Button.Content>
+                        <Image Source="{StaticResource SettingsIcon}" Stretch="Fill" Margin="2"/>
+                    </Button.Content>
+                </Button>
             </Grid>
 
             <Grid x:Name="MusicViews" Grid.Row="0" Grid.Column="1">
@@ -157,8 +163,13 @@
                 </Grid.ColumnDefinitions>
 
                 <StackPanel Grid.Row="0" Grid.Column="0">
-                    <TextBox x:Name="SearchTrack"  Text="{Binding SearchWord, UpdateSourceTrigger=PropertyChanged}" BorderBrush="White" Foreground="White" BorderThickness="1" Margin="5" Background="Transparent"/>
+                    <TextBox x:Name="SearchTrack" Text="{Binding SearchWord, UpdateSourceTrigger=PropertyChanged}"
+                             BorderBrush="White" Foreground="White" BorderThickness="1" 
+                             Margin="5" Background="Transparent">
+
+                    </TextBox>
                     <TextBlock x:Name="ShowRepeatActive" Text="{Binding RepeatActiveForView}" Foreground="White" TextAlignment="Right" Margin="5"/>
+                    <TextBlock x:Name="ShowShuffleActive" Text="{Binding ShuffleActiveForView}" Foreground="White" TextAlignment="Right" Margin="5"/>
                 </StackPanel>
 
                 <TabControl Grid.Row="1" Grid.Column="0" Background="Transparent">
@@ -184,7 +195,7 @@
                                                 </Style>
                                             </GridView.ColumnHeaderContainerStyle>
 
-                                            <GridViewColumn x:Name="SongTitel">
+                                            <GridViewColumn x:Name="SongTitel" Width="825">
                                                 <GridViewColumn.CellTemplate>
                                                     <DataTemplate>
                                                         <DockPanel >
@@ -274,25 +285,44 @@
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
 
                     <TextBlock Grid.Column="0" Grid.Row="0" Margin="10,0,5,0" Text="{Binding FormatedCurrentPlayTimer,UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Foreground="White"/>
 
-                    <ProgressBar x:Name="SoundDuration" Grid.Column="1" Grid.Row="0"  Maximum="{Binding ProgressBarMax}" Value="{Binding ProgressBarValue}" Style="{StaticResource ProgressBarAnimatedStyle}" MinWidth="120" Margin="5,0,5,0" />
+                    <ProgressBar x:Name="SoundDuration" Grid.Column="1" Grid.Row="0"  Maximum="{Binding ProgressBarMax}" Value="{Binding ProgressBarValue}" Style="{StaticResource ProgressBarAnimatedStyle}" MinWidth="120" Height="10" Margin="5,0,5,0" />
 
-                    <Button Grid.Column="2" Grid.Row="0" Command="{Binding StartMusic}" Width="50" Margin="0,5,5,5" Style="{DynamicResource ButtonStyle}" ToolTip="Play selected Song">
+                    <Button Grid.Column="2" Grid.Row="0" Command="{Binding StartMusic}" CommandParameter="{Binding SoundSelectedItem}" Style="{StaticResource ButtonStyle}" Width="50" ToolTip="Play selected Song">
                         <Button.Content>
                             <Path Fill="Black" Data="M 1,1 L 20,10 L 1,18"/>
                         </Button.Content>
                     </Button>
 
-                    <Button Grid.Column="3" Grid.Row="0" Command="{Binding RepeatMusic}" Width="50" Style="{DynamicResource ButtonStyle}" ToolTip="Repeat On/Off">
+
+                    <Button Grid.Column="3" Grid.Row="0" Command="{Binding BreakMusic}" Style="{StaticResource ButtonStyle}" Width="50" ToolTip="Break current Song">
                         <Button.Content>
-                            <Image Source="{StaticResource InfinityIcom}" Stretch="Fill"/>
+                            <DockPanel>
+                                <Path Fill="Black" Data="M 0,1 L 2,1 L 2,18 L 0,18"/>
+                                <Path Fill="Black" Data="M 2,1 L 4,1 L 4,18 L 2,18"/>
+                            </DockPanel>
                         </Button.Content>
                     </Button>
 
-                    <DockPanel x:Name="SoundVolume" Grid.Column="4" Grid.Row="0" Margin="5,0,0,0">
+
+                    <Button Grid.Column="4" Grid.Row="0" Command="{Binding ShuffleMusic}" CommandParameter="{Binding SoundSelectedItem}" Style="{StaticResource ButtonStyle}" Width="50" ToolTip="Shuffle On/Off">
+                        <Button.Content>
+                            <Image Source="{StaticResource ShuffleIcon}" Stretch="Fill" Margin="2"/>
+                        </Button.Content>
+                    </Button>
+
+                    <Button Grid.Column="5" Grid.Row="0" Command="{Binding RepeatMusic}" Style="{StaticResource ButtonStyle}" Width="50" ToolTip="Repeat On/Off">
+                        <Button.Content>
+                            <Image Source="{StaticResource InfinityIcon}" Stretch="Fill"/>
+                        </Button.Content>
+                    </Button>
+
+                    <DockPanel x:Name="SoundVolume" Grid.Column="6" Grid.Row="0" Margin="5,0,0,0">
                         <Slider x:Name="SoundSlider" MinWidth="110" Value="{Binding SoundVolume}" Minimum="0" Maximum="100" Margin="0,5,0,5" />
                     </DockPanel>
 
