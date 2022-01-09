@@ -2,6 +2,10 @@ TODO[TS]
 - Ladebildschirm
 - Scrollbar Template hinzugefügt
 
+[TS] [Dev] [Playlist] MINOR Update 
+-Neue Funktion:
+	-> Playlist Stuff
+
 [TS]MAJOR Update Beta 2.0
 - Neue Funktionen:
 	-> Shuffle Button ermöglicht eine Zufallswiederholung von Songs

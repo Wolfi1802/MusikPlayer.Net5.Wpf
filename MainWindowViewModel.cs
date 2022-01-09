@@ -1,5 +1,6 @@
 ﻿using MusikPlayer.Commands;
 using MusikPlayer.Enum;
+using MusikPlayer.Features.PlayList;
 using MusikPlayer.FileManager;
 using MusikPlayer.Helper;
 using MusikPlayer.Model;
@@ -30,7 +31,7 @@ namespace MusikPlayer
         /// <para>MINOR jedes Features eine 0.X.0 ändern</para>
         /// <para>BUILD jeder BugFix eine 0.0.X ändern</para>
         /// </summary>
-        private const string VERSION_INFO = "2.2.0";
+        private const string VERSION_INFO = "2.1.0";
 
         private readonly List<string> mediaExtensions = new List<string> { FILE_DATA_NAME };
 
@@ -59,6 +60,7 @@ namespace MusikPlayer
                 SoundItemsSource = new ObservableCollection<SoundItemViewModel>();
 
             this.SoundItemsSourceFilter = new ObservableCollection<SoundItemViewModel>();
+            this.PlayList = new ObservableCollection<PlayListViewModel>();
 
             this.ProgressBarMax = 100;
             this.ProgressBarValue = 0;
@@ -75,7 +77,23 @@ namespace MusikPlayer
 
         public static ObservableCollection<SoundItemViewModel> SoundItemsSource { set; get; }
 
-        public ObservableCollection<SoundItemViewModel> SoundItemsSourceFilter { set; get; }
+        public ObservableCollection<SoundItemViewModel> SoundItemsSourceFilter
+        {
+            get => base.GetProperty<ObservableCollection<SoundItemViewModel>>(nameof(this.SoundItemsSourceFilter));
+            set
+            {
+                base.SetProperty(nameof(this.SoundItemsSourceFilter), value);
+            }
+        }
+
+        public ObservableCollection<PlayListViewModel> PlayList
+        {
+            get => base.GetProperty<ObservableCollection<PlayListViewModel>>(nameof(this.PlayList));
+            set
+            {
+                base.SetProperty(nameof(this.PlayList), value);
+            }
+        }
 
         public SoundItemViewModel SoundSelectedItem
         {
@@ -293,6 +311,19 @@ namespace MusikPlayer
             JsonDirector.Instance.SaveSongDataToJson(soundItemList);
         }
 
+        private ObservableCollection<SoundItemViewModel> GetAllFavorites()
+        {
+            var favList = new ObservableCollection<SoundItemViewModel>();
+
+            foreach (SoundItemViewModel soundItem in SoundItemsSource)
+            {
+                if (soundItem.IsFavorite)
+                    favList.Add(soundItem);
+            }
+
+            return favList;
+        }
+
         private void StartSearch(string searchWord)
         {
             ObservableCollection<SoundItemViewModel> filteredSounds = new ObservableCollection<SoundItemViewModel>();
@@ -379,6 +410,7 @@ namespace MusikPlayer
             foreach (SoundItem item in loadedDatas)
             {
                 var soundItemVM = new SoundItemViewModel(item);
+                soundItemVM.OnFavStateChanged += OnSoundItemFavStateChanged;
 
                 if (this.fileDirector.ExistFile(soundItemVM.Model.FilePath))
                     this.AddToObservableCollections(soundItemVM);
@@ -495,6 +527,7 @@ namespace MusikPlayer
         private void AddSongBy(string filePath, bool isStartUp = false)
         {
             SoundItemViewModel soundItemVM = this.soundItemFactory.CreateListItem(filePath);
+            soundItemVM.OnFavStateChanged += OnSoundItemFavStateChanged;
 
             if (!SoundItemsSource.Any(x => x.NameToShow == soundItemVM.NameToShow))
             {
@@ -578,6 +611,12 @@ namespace MusikPlayer
             this.ManageStartMusic(soundItemViewModel);
         }
 
+        private void OnSoundItemFavStateChanged(SoundItemViewModel obj)
+        {
+            this.SortItemsListBy(this.currentSort, SortableListViewHeader.Favorite);
+            base.OnPropertyChanged(nameof(SoundItemsSource));
+        }
+
         private void OnBreakMusic()
         {
             if (!this.SoundSelectedItem.IsBreak)
@@ -645,6 +684,43 @@ namespace MusikPlayer
         {
             System.Diagnostics.Debug.WriteLine("Settings open");
         });
+
+        #region PlayListStuff
+
+        public ICommand AddToPlaylist => new RelayCommand(o =>
+        {
+            if (o is SoundItemViewModel)
+                System.Diagnostics.Debug.WriteLine("AddToPlaylist");
+        });
+
+        public ICommand CreatePlaylist => new DelegateCommand(() =>
+        {
+            AddEditPlayListWindow window = new AddEditPlayListWindow();
+            window.ShowDialog();
+            System.Diagnostics.Debug.WriteLine("CreatePlaylist");
+        });
+
+        public ICommand EditPlayList => new DelegateCommand(() =>
+        {
+            AddEditPlayListWindow window = new AddEditPlayListWindow();
+            window.ShowDialog();
+            System.Diagnostics.Debug.WriteLine("EditPlayList");
+        });
+
+        public ICommand DeletePlayList => new RelayCommand(o =>
+        {
+            try 
+            {
+                if (o != null && o is PlayListViewModel item)
+                    this.PlayList.Remove(item);
+            }
+            catch(Exception ex)
+            {
+                Logs.Logger.Instance.ExceptionLogg($"{nameof(MainWindowViewModel)}", $"{nameof(this.DeletePlayList)}", ex.Message, $"hier passiert abgefahrener scheiß");
+            }
+        });
+
+        #endregion
 
         #region SortColumns Commands
 

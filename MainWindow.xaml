@@ -140,7 +140,7 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <Button Content="Feature 1" Grid.Row="0" Grid.Column="0" Height="60" Width="60" Margin="10" IsEnabled="False"/>
+                <Button Content="ICON Erstelle PlayList" Grid.Row="0" Grid.Column="0" Height="60" Width="60" Margin="10"  Command="{Binding CreatePlaylist}" Style="{StaticResource InvisibleButtonStyle}"/>
                 <Button Content="Feature 2" Grid.Row="1" Grid.Column="0" Height="60" Width="60" Margin="10" IsEnabled="False"/>
                 <Button Content="Feature 3" Grid.Row="2" Grid.Column="0" Height="60" Width="60" Margin="10" IsEnabled="False"/>
                 <Button Content="Feature 4" Grid.Row="3" Grid.Column="0" Height="60" Width="60" Margin="10" IsEnabled="False"/>
@@ -163,11 +163,8 @@
                 </Grid.ColumnDefinitions>
 
                 <StackPanel Grid.Row="0" Grid.Column="0">
-                    <TextBox x:Name="SearchTrack" Text="{Binding SearchWord, UpdateSourceTrigger=PropertyChanged}"
-                             BorderBrush="White" Foreground="White" BorderThickness="1" 
-                             Margin="5" Background="Transparent">
-
-                    </TextBox>
+                    <TextBox x:Name="SearchTrack" Text="{Binding SearchWord, UpdateSourceTrigger=PropertyChanged}" 
+                             Style="{StaticResource SearchTextBoxStyle}"/>
                     <TextBlock x:Name="ShowRepeatActive" Text="{Binding RepeatActiveForView}" Foreground="White" TextAlignment="Right" Margin="5"/>
                     <TextBlock x:Name="ShowShuffleActive" Text="{Binding ShuffleActiveForView}" Foreground="White" TextAlignment="Right" Margin="5"/>
                 </StackPanel>
@@ -219,6 +216,14 @@
                                             </GridViewColumn>
                                         </GridView>
                                     </ListView.View>
+
+                                    <ListView.ContextMenu>
+                                        <ContextMenu>
+                                            <MenuItem Header="Füge zur Playlist hinzu..." Command="{Binding AddToPlaylist}" 
+                                                      CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.SelectedItem}" />
+                                            <MenuItem Header="Erstelle Playlist..." Command="{Binding CreatePlaylist}"/>
+                                        </ContextMenu>
+                                    </ListView.ContextMenu>
                                 </ListView>
                             </StackPanel>
                         </Grid>
@@ -226,7 +231,46 @@
 
                     <TabItem>
                         <TabItem.Header>
-                            <TextBlock Text="Favoriten Stuff"/>
+                            <TextBlock Text="PlayLists"/>
+                        </TabItem.Header>
+
+                        <Grid x:Name="AllPlayLists" Grid.Row="0" Grid.Column="1" >
+
+                            <ListView x:Name="PlayList" Grid.Row="0" Height="{Binding ElementName=AllSounds,Path=ActualHeight}"
+                                    SelectionMode="Single"
+                                    ItemsSource="{Binding SoundItemsSourceFilter, UpdateSourceTrigger=PropertyChanged}" 
+                                    SelectedValue="{Binding SoundSelectedItem, UpdateSourceTrigger=PropertyChanged}"
+                                    Background="Transparent" Foreground="White" ScrollViewer.HorizontalScrollBarVisibility="Disabled" >
+                                <ListView.View>
+                                    <GridView AllowsColumnReorder="False">
+                                        <GridView.ColumnHeaderContainerStyle>
+                                            <Style TargetType="GridViewColumnHeader">
+                                                <Setter Property="Background" Value="Transparent"/>
+                                                <Setter Property="Foreground" Value="White"/>
+                                                <Setter Property="Template" Value="{StaticResource GridViewColumnHeaderCustom}"/>
+                                            </Style>
+                                        </GridView.ColumnHeaderContainerStyle>
+                                        <!--Name PlayList-->
+                                        <!--Zeit der gesamten PlayList wenn abgespielt-->
+                                        <!--Anzahl songs-->
+                                    </GridView>
+                                </ListView.View>
+
+                                <ListView.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Header="Ändere Playlist..." Command="{Binding EditPlayList}" />
+                                        <MenuItem Header="Lösche Playlist..." Command="{Binding DeletePlayList}"
+                                                  CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.SelectedItem}" />
+                                    </ContextMenu>
+                                </ListView.ContextMenu>
+                            </ListView>
+    
+                        </Grid>
+                    </TabItem>
+
+                    <TabItem>
+                        <TabItem.Header>
+                            <TextBlock Text="Fancy Stuff"/>
                         </TabItem.Header>
                         <Grid x:Name="AnimatedBackgroundPicture" HorizontalAlignment="Center" VerticalAlignment="Center">
                             <Ellipse Style="{StaticResource EllipseStyle}" Stroke="Transparent">
