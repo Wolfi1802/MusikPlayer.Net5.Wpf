@@ -13,6 +13,8 @@ namespace MusikPlayer.ViewModel
     {
         private Mp3FileReader _reader;
 
+        public Action<SoundItemViewModel> OnFavStateChanged;
+
 
         public SoundItemViewModel(SoundItem item)
         {
@@ -54,6 +56,7 @@ namespace MusikPlayer.ViewModel
             {
                 base.SetProperty(nameof(this.IsFavorite), value);
                 this.Model.IsFavorite = value;
+                this.OnFavStateChanged?.Invoke(this);
             }
         }
 

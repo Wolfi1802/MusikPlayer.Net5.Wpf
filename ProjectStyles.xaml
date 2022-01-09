@@ -177,6 +177,31 @@
         <Setter Property="VerticalAlignment" Value="Center"/>
     </Style>
 
+    <!--textbox-->
+
+    <Style x:Key="SearchTextBoxStyle" TargetType="{x:Type TextBox}" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+        <Setter Property="BorderBrush" Value="White"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Margin" Value="5"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Style.Resources>
+            <VisualBrush x:Key="CueBannerBrush" AlignmentX="Center" AlignmentY="Center" Stretch="None">
+                <VisualBrush.Visual>
+                    <Label Content="Suche nach SongTitel..." Foreground="LightGray" />
+                </VisualBrush.Visual>
+            </VisualBrush>
+        </Style.Resources>
+        <Style.Triggers>
+            <Trigger Property="Text" Value="{x:Static sys:String.Empty}">
+                <Setter Property="Background" Value="{StaticResource CueBannerBrush}" />
+            </Trigger>
+            <Trigger Property="Text" Value="{x:Null}">
+                <Setter Property="Background" Value="{StaticResource CueBannerBrush}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
     <Style x:Key="RunTextTextBox" TargetType="TextBox">
         <Setter Property="OverridesDefaultStyle" Value="True"/>
         <Setter Property="Background" Value="Transparent"/>
