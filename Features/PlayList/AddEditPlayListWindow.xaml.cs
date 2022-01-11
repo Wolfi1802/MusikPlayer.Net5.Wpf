@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MusikPlayer.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,8 +20,9 @@ namespace MusikPlayer.Features.PlayList
     /// </summary>
     public partial class AddEditPlayListWindow : Window
     {
-        public AddEditPlayListWindow()
+        public AddEditPlayListWindow(bool isEdit = false, PlayListListItem playListListItem = null)
         {
+            this.DataContext = new PlayListViewModel(this, isEdit, playListListItem);
             InitializeComponent();
         }
     }
