@@ -15,7 +15,6 @@ namespace MusikPlayer.ViewModel
 
         public Action<SoundItemViewModel> OnFavStateChanged;
 
-
         public SoundItemViewModel(SoundItem item)
         {
             this.Model = item;
@@ -79,9 +78,6 @@ namespace MusikPlayer.ViewModel
             set => base.SetProperty(nameof(this.IsBreak), value);
         }
 
-        /// <summary>
-        /// TODO[TS] TESTEN!
-        /// </summary>
         public bool IsAbleToBreak
         {
             get => base.GetProperty<bool>(nameof(this.IsAbleToBreak));

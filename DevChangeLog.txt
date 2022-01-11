@@ -1,6 +1,14 @@
 TODO[TS]
 - Ladebildschirm
 - Scrollbar Template hinzugefügt
+- Abspielen von playlisten erlauben
+- suche für playlisten ermöglichen + reiter für die suche in playlist reiter schieben [View]
+- suche für songs in den reiter für songs verschieben[VIEW]
+
+[TS] MINOR Update [Playlist] [Release]
+-Neue Funktion:
+	-> Playlist kann erstellt,geändert und gelöscht werden
+-Version von 2.1.0 auf 2.2.0 gesetzt
 
 [TS] [Dev] [Playlist] MINOR Update 
 -Neue Funktion:
