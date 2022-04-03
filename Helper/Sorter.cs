@@ -1,4 +1,5 @@
 ﻿using MusikPlayer.Enum;
+using MusikPlayer.Logs;
 using MusikPlayer.Model;
 using MusikPlayer.ViewModel;
 using System;
@@ -21,8 +22,16 @@ namespace MusikPlayer.Helper
             {
                 if (item.IsFavorite)
                 {
-                    favoriteList.Add(item);
-                    listToSort.Remove(item);
+                    try
+                    {
+
+                        favoriteList.Add(item);
+                        listToSort.Remove(item);
+                    }
+                    catch(Exception ex)
+                    {
+                        Logger.Instance.ExceptionLogg(nameof(Sorter), nameof(GetSortedListBy), ex, "Sonderzeichen sind hier nicht erlaubt");
+                    }
                 }
             }
 

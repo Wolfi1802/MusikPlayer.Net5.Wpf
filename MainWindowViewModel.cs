@@ -336,7 +336,7 @@ namespace MusikPlayer
         private void SetConfig()
         {
             Logger.Instance.RunLogg(nameof(MainWindowViewModel), nameof(SetConfig), "Lade Einstellungen");
-            var config = JsonDirector.Instance.LoadConfigFromJson();
+            var config = JsonDirector.Instance.TryLoadConfigFromJson();
 
             if (config != null)
             {
