@@ -171,7 +171,11 @@ namespace MusikPlayer.FileManager
         private List<SoundItem> LoadSoundsFromJson(string filePath)//TODO [TS] timespan wird nicht richtig geladen
         {
             if (string.IsNullOrEmpty(filePath))
+            {
                 Logger.Instance.ExceptionLogg(nameof(JsonDirector), nameof(LoadSoundsFromJson), new Exception($"{nameof(filePath)}ist leer"));
+
+                return null;
+            }
 
             string datas = base.LoadFile(filePath);
 
@@ -190,7 +194,10 @@ namespace MusikPlayer.FileManager
         private Config LoadConfigFromJson(string filePath)
         {
             if (string.IsNullOrEmpty(filePath))
+            {
                 Logger.Instance.ExceptionLogg(nameof(JsonDirector), nameof(LoadConfigFromJson), new Exception($"{nameof(filePath)}ist leer"));
+                return null;
+            }
 
             string datas = base.LoadFile(filePath);
 
