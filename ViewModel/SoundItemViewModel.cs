@@ -1,4 +1,5 @@
-﻿using MusikPlayer.Model;
+﻿using MusikPlayer.Logs;
+using MusikPlayer.Model;
 using NAudio.Wave;
 using System;
 using System.Collections.Generic;
@@ -100,7 +101,7 @@ namespace MusikPlayer.ViewModel
             }
             else
             {
-                //TODO[TS] LOGGER
+                Logger.Instance.ExceptionLogg(nameof(SoundItemViewModel), nameof(UpdateView), new Exception("Reader oder File ist leer"));
             }
         }
 
@@ -114,8 +115,7 @@ namespace MusikPlayer.ViewModel
                 }
                 catch (Exception ex)
                 {
-                    System.Diagnostics.Debug.WriteLine(ex);
-                    Logs.Logger.Instance.ExceptionLogg($"{nameof(SoundItemViewModel)}", $"{nameof(this.TryUpdateView)}", ex.Message, $"hier passiert abgefahrener scheiß");
+                    Logger.Instance.ExceptionLogg($"{nameof(SoundItemViewModel)}", $"{nameof(this.TryUpdateView)}", ex, $"hier passiert abgefahrener scheiß");
                 }
             }
         }

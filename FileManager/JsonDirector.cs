@@ -1,4 +1,5 @@
 ﻿using MusikPlayer.Helper;
+using MusikPlayer.Logs;
 using MusikPlayer.Model;
 using MusikPlayer.ViewModel;
 using System;
@@ -27,7 +28,7 @@ namespace MusikPlayer.FileManager
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine(ex);
+                Logger.Instance.ExceptionLogg(nameof(JsonDirector), nameof(TrySaveConfigToJson), ex);
             }
         }
 
@@ -39,7 +40,7 @@ namespace MusikPlayer.FileManager
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine(ex);
+                Logger.Instance.ExceptionLogg(nameof(JsonDirector), nameof(TrySaveSongDataToJson), ex);
             }
         }
 
@@ -54,8 +55,7 @@ namespace MusikPlayer.FileManager
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine(ex);
-                //TODO Loggen
+                Logger.Instance.ExceptionLogg(nameof(JsonDirector), nameof(TryLoadConfigFromJson), ex);
             }
 
             return null;
@@ -72,8 +72,7 @@ namespace MusikPlayer.FileManager
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine(ex);
-                //TODO Loggen
+                Logger.Instance.ExceptionLogg(nameof(JsonDirector), nameof(TryLoadSongDataFromJson), ex);
             }
 
             return null;
@@ -131,7 +130,7 @@ namespace MusikPlayer.FileManager
             this.PrepareSaving(file, folder);
 
             var json = JsonSerializer.Serialize(data);
-            base.SaveFile(json, filePath);
+            base.SaveText(json, filePath);
         }
 
         private void SaveConfigToJson(Config data, string file, string folder)
@@ -141,7 +140,7 @@ namespace MusikPlayer.FileManager
             this.PrepareSaving(file, folder);
 
             var json = JsonSerializer.Serialize(data);
-            base.SaveFile(json, filePath);
+            base.SaveText(json, filePath);
         }
 
         private List<SoundItem> Convert(List<SoundItem> value)
@@ -172,7 +171,7 @@ namespace MusikPlayer.FileManager
         private List<SoundItem> LoadSoundsFromJson(string filePath)//TODO [TS] timespan wird nicht richtig geladen
         {
             if (string.IsNullOrEmpty(filePath))
-                System.Diagnostics.Debug.WriteLine($"{nameof(JsonDirector)},{nameof(LoadSoundsFromJson)},{nameof(filePath)}ist leer");
+                Logger.Instance.ExceptionLogg(nameof(JsonDirector), nameof(LoadSoundsFromJson), new Exception($"{nameof(filePath)}ist leer"));
 
             string datas = base.LoadFile(filePath);
 
@@ -191,7 +190,7 @@ namespace MusikPlayer.FileManager
         private Config LoadConfigFromJson(string filePath)
         {
             if (string.IsNullOrEmpty(filePath))
-                System.Diagnostics.Debug.WriteLine($"{nameof(JsonDirector)},{nameof(LoadConfigFromJson)},{nameof(filePath)}ist leer");
+                Logger.Instance.ExceptionLogg(nameof(JsonDirector), nameof(LoadConfigFromJson), new Exception($"{nameof(filePath)}ist leer"));
 
             string datas = base.LoadFile(filePath);
 

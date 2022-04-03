@@ -9,7 +9,6 @@ namespace MusikPlayer.FileManager
 
         public const string CONFIG_FILE = "\\Config.json";
         public const string SONG_DATA_FILE = "\\SongData.json";
-        public const string LOGS_FILE = "\\Log.json";
 
         public readonly string ConfigFilePath = $"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}{PROJECT_DIRECTORY}";
         public readonly string SongDataFilePath = $"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}{PROJECT_DIRECTORY}";
@@ -29,9 +28,10 @@ namespace MusikPlayer.FileManager
             return GetSaveFileInfo(filter, dialogTitle);
         }
 
-        public void SaveFile(string data, string filePath)
+        public async void SaveText(string data, string filePath)
         {
-            File.WriteAllText(filePath, data);
+            System.Diagnostics.Debug.WriteLine($"DEBUG -> LOG:\n{data}\n");
+            await File.AppendAllTextAsync(filePath, data);
         }
 
         public string LoadFile(string filePath)
