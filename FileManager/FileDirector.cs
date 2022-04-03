@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MusikPlayer.Logs;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -71,13 +72,13 @@ namespace MusikPlayer.FileManager
                         filesFound.Add(filePath);
                 }
             }
-            catch (UnauthorizedAccessException)
+            catch (UnauthorizedAccessException UAex)
             {
-                System.Diagnostics.Debug.WriteLine($"Access denied to [{directory.Name}]");
+                Logger.Instance.ExceptionLogg(nameof(FileDirector), nameof(GetFilesPath), UAex, $"Access denied to [{directory.Name}]");
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine(ex);
+                Logger.Instance.ExceptionLogg(nameof(FileDirector), nameof(GetFilesPath), ex);
             }
             return filesFound;
         }

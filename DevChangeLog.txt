@@ -4,6 +4,11 @@ TODO[TS]
 - Abspielen von playlisten erlauben
 - suche für playlisten ermöglichen + reiter für die suche in playlist reiter schieben [View]
 - suche für songs in den reiter für songs verschieben[VIEW]
+- Backup laden und speichern
+
+[TS] [Dev] [Logger]
+- Logger hinzugefügt
+-Version von 2.2.0 auf 2.2.1 gesetzt
 
 [TS] MINOR Update [Playlist] [Release]
 -Neue Funktion:

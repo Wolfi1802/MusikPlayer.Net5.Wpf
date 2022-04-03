@@ -1,4 +1,5 @@
 ﻿using MusikPlayer.FileManager;
+using MusikPlayer.Logs;
 using MusikPlayer.Model;
 using System;
 using System.Collections.Generic;
@@ -55,6 +56,7 @@ namespace MusikPlayer
 
         private void OnMainwindowClosed(object sender, EventArgs e)
         {
+            Logger.Instance.RunLogg($"{nameof(MainWindow)}", $"{nameof(this.OnMainwindowClosed)}", "Schließe Programm");
             MainWindowViewModel.OnProgrammShutDown();
 
             //jetzt noch alle Threads/tasks killen
@@ -64,6 +66,7 @@ namespace MusikPlayer
                 Application.Current.Shutdown();
             }
             this.Close();
+            Logger.Instance.RunLogg($"{nameof(MainWindow)}", $"{nameof(this.OnMainwindowClosed)}", "Schließe Programm Ende Erfolgreich");
         }
 
         public static MainWindow GetInstance

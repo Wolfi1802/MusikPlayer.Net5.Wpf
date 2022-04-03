@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MusikPlayer.Logs;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -45,8 +46,7 @@ namespace MusikPlayer.Helper
             }
             catch (Exception ex)
             {
-                //TODO logg
-                System.Diagnostics.Debug.WriteLine(ex);
+                Logger.Instance.ExceptionLogg(nameof(TimeSpanConverter), nameof(GetSecondsFromTimeSpan), ex);
             }
             return default;
         }

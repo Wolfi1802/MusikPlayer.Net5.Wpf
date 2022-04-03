@@ -1,4 +1,5 @@
 ﻿
+using MusikPlayer.Logs;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -24,7 +25,7 @@ namespace MusikPlayer.Commands
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine(ex);
+                Logger.Instance.ExceptionLogg(nameof(DelegateCommand),nameof(Execute), ex);
             }
         }
 

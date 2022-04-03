@@ -3,6 +3,7 @@ using MusikPlayer.Enum;
 using MusikPlayer.Features.PlayList;
 using MusikPlayer.FileManager;
 using MusikPlayer.Helper;
+using MusikPlayer.Logs;
 using MusikPlayer.Model;
 using MusikPlayer.Repo;
 using MusikPlayer.ViewModel;
@@ -32,7 +33,7 @@ namespace MusikPlayer
         /// <para>MINOR jedes Features eine 0.X.0 ändern</para>
         /// <para>BUILD jeder BugFix eine 0.0.X ändern</para>
         /// </summary>
-        private const string VERSION_INFO = "2.2.0";
+        private const string VERSION_INFO = "2.2.1";
 
         private readonly List<string> mediaExtensions = new List<string> { FILE_DATA_NAME };
 
@@ -46,10 +47,9 @@ namespace MusikPlayer
         private Config config { get { return Config.Instance(); } }
         private SongListClass SongListClassInstance;
 
-
-
         public MainWindowViewModel()
         {
+            Logger.Instance.RunLogg(nameof(MainWindowViewModel), nameof(MainWindowViewModel), "Initalisiere Backend");
             this.mediaPlayer = new MediaPlayer();
             this.fileDirector = FileDirector.GetFileDirector();
             this.soundItemFactory = new SoundItemFactory();
@@ -71,6 +71,7 @@ namespace MusikPlayer
 
             this.RunTextAnimationDuration = new TimeSpan(0, 0, 0, 15).ToString();
 
+            Logger.Instance.RunLogg(nameof(MainWindowViewModel), nameof(MainWindowViewModel), "Initalisiere Backend Ende Erfolgreich");
         }
 
         #region Propertys
@@ -289,6 +290,7 @@ namespace MusikPlayer
 
         public static void OnProgrammShutDown()
         {
+            Logger.Instance.RunLogg($"{nameof(MainWindowViewModel)}", $"{nameof(OnProgrammShutDown)}", $"{nameof(OnProgrammShutDown)} Sequenz");
             JsonDirector.Instance.SaveConfigToJson(Config.Instance());
 
             var soundItemList = new List<SoundItem>();
@@ -299,11 +301,13 @@ namespace MusikPlayer
             }
 
             JsonDirector.Instance.SaveSongDataToJson(soundItemList);
+            Logger.Instance.RunLogg($"{nameof(MainWindowViewModel)}", $"{nameof(OnProgrammShutDown)}", $"{nameof(OnProgrammShutDown)} Sequenz Ende");
+
         }
 
         private void OpenPlayList(bool isEdit = false, PlayListListItem playListListItem = null)
         {
-
+            Logger.Instance.RunLogg(nameof(MainWindowViewModel), nameof(OpenPlayList), $"öffnet PlayList als {nameof(isEdit)}={isEdit}");
             AddEditPlayListWindow window = new AddEditPlayListWindow(isEdit, playListListItem);
             window.ShowDialog();
 
@@ -313,7 +317,7 @@ namespace MusikPlayer
             {
                 this.PlayListItemsSourceFilter.Add(item);
             }
-
+            Logger.Instance.RunLogg(nameof(MainWindowViewModel), nameof(OpenPlayList), "öffnet PlayList Ende Erfolgreich");
         }
 
         private void StartSearch(string searchWord)
@@ -331,6 +335,7 @@ namespace MusikPlayer
 
         private void SetConfig()
         {
+            Logger.Instance.RunLogg(nameof(MainWindowViewModel), nameof(SetConfig), "Lade Einstellungen");
             var config = JsonDirector.Instance.LoadConfigFromJson();
 
             if (config != null)
@@ -343,10 +348,12 @@ namespace MusikPlayer
                 this.SoundVolume = DEFAULT_VOLUME_VALUE;
                 this.ShowUserMsgMs = DEFAULT_MSG_SHOW_TIME;
             }
+            Logger.Instance.RunLogg(nameof(MainWindowViewModel), nameof(SetConfig), "Lade Einstellungen Ende Erfolgreich");
         }
 
         private void FillItemsSource()
         {
+            Logger.Instance.RunLogg(nameof(MainWindowViewModel), nameof(FillItemsSource), "Lade Songs");
             try
             {
                 var loadedDatas = JsonDirector.Instance.LoadSongDataFromJson();
@@ -362,8 +369,7 @@ namespace MusikPlayer
             }
             catch (Exception ex)
             {
-                //TODO loggen
-                System.Diagnostics.Debug.WriteLine(ex);
+                Logger.Instance.ExceptionLogg(nameof(MainWindowViewModel), nameof(FillItemsSource), ex);
 
                 if (ListsRepository.Instance.SoundItemsSource.Count == 0 && SoundItemsSourceFilter.Count == 0)//wenn beim laden über json was falsch gelaufen ist mach mal normal
                 {
@@ -374,6 +380,7 @@ namespace MusikPlayer
 
 
             base.OnPropertyChanged(nameof(this.SoundItemsSourceFilter));
+            Logger.Instance.RunLogg(nameof(MainWindowViewModel), nameof(FillItemsSource), "Lade Songs Ende Erfolgreich");
         }
 
         /// <summary>
@@ -381,6 +388,7 @@ namespace MusikPlayer
         /// </summary>
         private void LoadDatasBy(List<SoundItem> loadedDatas)
         {
+            Logger.Instance.RunLogg(nameof(MainWindowViewModel), nameof(LoadDatasBy), "Lade Songs aus vorhandender Datei");
             foreach (SoundItem item in loadedDatas)
             {
                 var soundItemVM = new SoundItemViewModel(item);
@@ -391,6 +399,7 @@ namespace MusikPlayer
             }
 
             this.SortItemsListBy(Sorting.Ascending, SortableListViewHeader.Favorite);
+            Logger.Instance.RunLogg(nameof(MainWindowViewModel), nameof(LoadDatasBy), "Lade Songs aus vorhandender Datei Ende Erfolgreich");
         }
 
         /// <summary>
@@ -398,8 +407,10 @@ namespace MusikPlayer
         /// </summary>
         private void LoadDatasByAlphaStart()
         {
+            Logger.Instance.RunLogg(nameof(MainWindowViewModel), nameof(LoadDatasByAlphaStart), "Durchsuche Pc nach Songs und lade Sie");
             this.AddSongsBy(fileDirector.GetAllFilesFromDevice(this.mediaExtensions), true);
             this.UpdateDurationOnViewThread();
+            Logger.Instance.RunLogg(nameof(MainWindowViewModel), nameof(LoadDatasByAlphaStart), "Durchsuche Pc nach Songs und lade Sie Ende Erfolgreich");
         }
 
         private void ManageStartMusic(SoundItemViewModel soundSelectedItem)
@@ -409,8 +420,7 @@ namespace MusikPlayer
             this.mediaPlayer.MediaFailed += (o, e) =>
             {
 
-                //TODO ERROR LOG
-                System.Diagnostics.Debug.WriteLine("FEHLER PASSIERT : " + e.ErrorException);
+                Logger.Instance.ExceptionLogg(nameof(MainWindowViewModel), nameof(ManageStartMusic), new Exception($"{o}, {e.ErrorException}"));
             };
             this.mediaPlayer.MediaEnded += (o, e) =>
             {
@@ -438,8 +448,8 @@ namespace MusikPlayer
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine(ex);
-            }
+                Logger.Instance.ExceptionLogg(nameof(MainWindowViewModel), nameof(UpdateTimerUnit), ex);
+            };
         }
 
         private void CheckRepeat(SoundItemViewModel soundSelectedItem)
@@ -474,7 +484,7 @@ namespace MusikPlayer
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"{ex}");
+                Logger.Instance.ExceptionLogg(nameof(MainWindowViewModel), nameof(SetMediaPlayerVolume), ex);
             }
         }
 
@@ -503,6 +513,13 @@ namespace MusikPlayer
             }
 
             this.SoundSelectedItem = soundItemVM;
+        }
+
+        private void AddSongToPlayList()
+        {
+            //    Logger.Instance.RunLogg(nameof(MainWindowViewModel), nameof(AddSongToPlayList), $"Füge {nameof()} zur PlayList {nameof()} hinzu");
+
+            //    Logger.Instance.RunLogg(nameof(MainWindowViewModel), nameof(AddSongToPlayList), $"Füge {nameof()} zur PlayList {nameof()} hinzu Ende Erfolgreich");
         }
 
         private void SortItemsListBy(Sorting sorting, SortableListViewHeader header)
@@ -540,7 +557,7 @@ namespace MusikPlayer
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"{ex}");
+                Logger.Instance.ExceptionLogg(nameof(MainWindowViewModel), nameof(TryRepeatCurrentSong), ex);
                 return false;
             }
             return true;
@@ -596,7 +613,7 @@ namespace MusikPlayer
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine(ex);
+                Logger.Instance.ExceptionLogg(nameof(MainWindowViewModel), nameof(StartMusic), ex);
             }
         });
 
@@ -608,7 +625,7 @@ namespace MusikPlayer
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine(ex);
+                Logger.Instance.ExceptionLogg(nameof(MainWindowViewModel), nameof(BreakMusic), ex);
             }
         });
 
@@ -638,13 +655,17 @@ namespace MusikPlayer
         public ICommand AddToPlaylist => new RelayCommand(o =>
         {
             if (o is SoundItemViewModel)
-                System.Diagnostics.Debug.WriteLine("AddToPlaylist");
+            {
+                this.AddSongToPlayList();
+            }
+            else
+                Logger.Instance.ExceptionLogg(nameof(MainWindowViewModel), nameof(AddToPlaylist), new Exception($"Objekt ist kein {nameof(SoundItemViewModel)}"));
         });
+
 
         public ICommand CreatePlaylist => new DelegateCommand(() =>
         {
             this.OpenPlayList();
-            System.Diagnostics.Debug.WriteLine("CreatePlaylist");
         });
 
         public ICommand EditPlayList => new RelayCommand(o =>
@@ -652,10 +673,9 @@ namespace MusikPlayer
             if (o != null && o is PlayListListItem editItem)
             {
                 this.OpenPlayList(true, editItem);
-                System.Diagnostics.Debug.WriteLine("EditPlayList");
             }
             else
-                System.Diagnostics.Debug.WriteLine($"{o} ist o");
+                Logger.Instance.ExceptionLogg(nameof(MainWindowViewModel), nameof(EditPlayList), new Exception($"Objekt ist kein {nameof(PlayListListItem)}"));
         });
 
         public ICommand DeletePlayList => new RelayCommand(o =>
@@ -670,7 +690,7 @@ namespace MusikPlayer
             }
             catch (Exception ex)
             {
-                Logs.Logger.Instance.ExceptionLogg($"{nameof(MainWindowViewModel)}", $"{nameof(this.DeletePlayList)}", ex.Message, $"hier passiert abgefahrener scheiß");
+                Logger.Instance.ExceptionLogg($"{nameof(MainWindowViewModel)}", $"{nameof(this.DeletePlayList)}", ex);
             }
         });
 
@@ -689,7 +709,7 @@ namespace MusikPlayer
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine(ex);
+                Logger.Instance.ExceptionLogg(nameof(MainWindowViewModel), nameof(SortDuration), ex);
             }
         });
 
@@ -704,7 +724,7 @@ namespace MusikPlayer
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine(ex);
+                Logger.Instance.ExceptionLogg(nameof(MainWindowViewModel), nameof(SortTitel), ex);
             }
         });
 
@@ -718,7 +738,7 @@ namespace MusikPlayer
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine(ex);
+                Logger.Instance.ExceptionLogg(nameof(MainWindowViewModel), nameof(OnTimerTick), ex);
             }
         }
 
