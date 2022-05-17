@@ -33,7 +33,7 @@ namespace MusikPlayer
         /// <para>MINOR jedes Features eine 0.X.0 ändern</para>
         /// <para>BUILD jeder BugFix eine 0.0.X ändern</para>
         /// </summary>
-        private const string VERSION_INFO = "2.2.1";
+        private const string VERSION_INFO = "2.3.2";
 
         private readonly List<string> mediaExtensions = new List<string> { FILE_DATA_NAME };
 
@@ -45,7 +45,8 @@ namespace MusikPlayer
         private SoundItemViewModel lastPlaySoundItem;
         private SoundItemViewModel currentPlaySoundItem;
         private Config config { get { return Config.Instance(); } }
-        private SongListClass SongListClassInstance;
+        private SongListClass SongListClassInstance { get { return ListsRepository.Instance.GetInstanceSongs(); } }
+        private PlayListClass PlayListClassInstance { get { return ListsRepository.Instance.GetInstancePlayLists(); } }
 
         public MainWindowViewModel()
         {
@@ -158,15 +159,26 @@ namespace MusikPlayer
             get { return $"{this.SoundVolume} %"; }
         }
 
-        public string SearchWord
+        public string SongTitelSearchWord
         {
-            get => base.GetProperty<string>(nameof(this.SearchWord));
+            get => base.GetProperty<string>(nameof(this.SongTitelSearchWord));
             set
             {
-                base.SetProperty(nameof(this.SearchWord), value);
-                this.StartSearch(value);
+                base.SetProperty(nameof(this.SongTitelSearchWord), value);
+                this.StartSongTitleSearch(value);
             }
         }
+
+        public string PlayListSearchWord
+        {
+            get => base.GetProperty<string>(nameof(this.PlayListSearchWord));
+            set
+            {
+                base.SetProperty(nameof(this.PlayListSearchWord), value);
+                this.StartPlayListSearch(value);
+            }
+        }
+
 
         public bool RepeatActive
         {
@@ -301,7 +313,6 @@ namespace MusikPlayer
 
             this.SoundItemsSourceFilter = new ObservableCollection<SoundItemViewModel>();
             this.PlayListItemsSourceFilter = new ObservableCollection<PlayListListItem>();
-            this.SongListClassInstance = ListsRepository.Instance.GetInstanceSongs();
 
             this.ProgressBarMax = 100;
             this.ProgressBarValue = 0;
@@ -331,12 +342,21 @@ namespace MusikPlayer
             Logger.Instance.RunLogg(nameof(MainWindowViewModel), nameof(OpenPlayList), "öffnet PlayList Ende Erfolgreich");
         }
 
-        private void StartSearch(string searchWord)
+        private void StartSongTitleSearch(string searchWord)
         {
             this.SoundItemsSourceFilter = this.SongListClassInstance.GetFilteredSoundsBy(searchWord);
 
             this.SortItemsListBy(Sorting.Ascending, SortableListViewHeader.Favorite);
         }
+
+        private void StartPlayListSearch(string searchWord)
+        {
+            this.PlayListItemsSourceFilter = this.PlayListClassInstance.GetFilteredPlayLists(searchWord);
+
+            base.OnPropertyChanged(nameof(ListsRepository.Instance.PlayListItemsSource));
+            base.OnPropertyChanged(nameof(this.PlayListItemsSourceFilter));
+        }
+
 
         private void AddToObservableCollections(SoundItemViewModel soundItemViewModel)
         {

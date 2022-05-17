@@ -163,8 +163,6 @@
                 </Grid.ColumnDefinitions>
 
                 <StackPanel Grid.Row="0" Grid.Column="0">
-                    <TextBox x:Name="SearchTrack" Text="{Binding SearchWord, UpdateSourceTrigger=PropertyChanged}" 
-                             Style="{StaticResource SearchTextBoxStyle}"/>
                     <TextBlock x:Name="ShowRepeatActive" Text="{Binding RepeatActiveForView}" Foreground="White" TextAlignment="Right" Margin="5"/>
                     <TextBlock x:Name="ShowShuffleActive" Text="{Binding ShuffleActiveForView}" Foreground="White" TextAlignment="Right" Margin="5"/>
                 </StackPanel>
@@ -175,8 +173,11 @@
                             <TextBlock Text="Aktueller Track Stuff"/>
                         </TabItem.Header>
 
-                        <Grid x:Name="AllSounds" Grid.Row="0" Grid.Column="1" >
+                        <Grid x:Name="AllSounds">
                             <StackPanel>
+                                <TextBox x:Name="SearchTrack" Text="{Binding SongTitelSearchWord, UpdateSourceTrigger=PropertyChanged}" 
+                             Style="{StaticResource SearchTextBoxStyle}"/>
+
                                 <ListView x:Name="MusicList" Height="{Binding ElementName=AllSounds,Path=ActualHeight}"
                                     SelectionMode="Single"
                                     ItemsSource="{Binding SoundItemsSourceFilter, UpdateSourceTrigger=PropertyChanged}" 
@@ -234,69 +235,72 @@
                             <TextBlock Text="PlayLists"/>
                         </TabItem.Header>
 
-                        <Grid x:Name="AllPlayLists" Grid.Row="0" Grid.Column="1" >
+                        <Grid x:Name="AllPlayLists">
+                            <StackPanel>
+                                <TextBox x:Name="SearchPlayList" Text="{Binding PlayListSearchWord, UpdateSourceTrigger=PropertyChanged}" 
+                             Style="{StaticResource SearchTextBoxStyle}"/>
 
-                            <ListView x:Name="PlayList" Grid.Row="0" Height="{Binding ElementName=AllSounds,Path=ActualHeight}"
+                                <ListView x:Name="PlayList"  Height="{Binding ElementName=AllSounds,Path=ActualHeight}"
                                     SelectionMode="Single"
                                     ItemsSource="{Binding PlayListItemsSourceFilter, UpdateSourceTrigger=PropertyChanged}" 
                                     Background="Transparent" Foreground="White" ScrollViewer.HorizontalScrollBarVisibility="Disabled" >
-                                <ListView.View>
-                                    <GridView AllowsColumnReorder="False">
-                                        <GridView.ColumnHeaderContainerStyle>
-                                            <Style TargetType="GridViewColumnHeader">
-                                                <Setter Property="Background" Value="Transparent"/>
-                                                <Setter Property="Foreground" Value="White"/>
-                                                <Setter Property="Template" Value="{StaticResource GridViewColumnHeaderCustom}"/>
-                                            </Style>
-                                        </GridView.ColumnHeaderContainerStyle>
+                                    <ListView.View>
+                                        <GridView AllowsColumnReorder="False">
+                                            <GridView.ColumnHeaderContainerStyle>
+                                                <Style TargetType="GridViewColumnHeader">
+                                                    <Setter Property="Background" Value="Transparent"/>
+                                                    <Setter Property="Foreground" Value="White"/>
+                                                    <Setter Property="Template" Value="{StaticResource GridViewColumnHeaderCustom}"/>
+                                                </Style>
+                                            </GridView.ColumnHeaderContainerStyle>
 
-                                        <GridViewColumn x:Name="PLTitel" Width="625">
-                                            <GridViewColumn.CellTemplate>
-                                                <DataTemplate>
-                                                    <DockPanel>
-                                                        <Label Style="{StaticResource SoundItemLabelStyle}" 
+                                            <GridViewColumn x:Name="PLTitel" Width="625">
+                                                <GridViewColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <DockPanel>
+                                                            <Label Style="{StaticResource SoundItemLabelStyle}" 
                                                                Content="{Binding Name, UpdateSourceTrigger=PropertyChanged}"/>
-                                                    </DockPanel>
-                                                </DataTemplate>
-                                            </GridViewColumn.CellTemplate>
-                                            <Button Content="PlayList Titel" Style="{StaticResource InvisibleButtonStyle}" Width="{Binding ElementName=PLTitel,Path=Width}"/>
-                                        </GridViewColumn>
-                                        
-                                        <GridViewColumn x:Name="PLDuration" Width="125">
-                                            <GridViewColumn.CellTemplate>
-                                                <DataTemplate>
-                                                    <DockPanel>
-                                                        <Label Style="{StaticResource SoundItemLabelStyle}" 
+                                                        </DockPanel>
+                                                    </DataTemplate>
+                                                </GridViewColumn.CellTemplate>
+                                                <Button Content="PlayList Titel" Style="{StaticResource InvisibleButtonStyle}" Width="{Binding ElementName=PLTitel,Path=Width}"/>
+                                            </GridViewColumn>
+
+                                            <GridViewColumn x:Name="PLDuration" Width="125">
+                                                <GridViewColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <DockPanel>
+                                                            <Label Style="{StaticResource SoundItemLabelStyle}" 
                                                                Content="{Binding DurationOfPlayList, UpdateSourceTrigger=PropertyChanged}"/>
-                                                    </DockPanel>
-                                                </DataTemplate>
-                                            </GridViewColumn.CellTemplate>
-                                            <Button Content="Duration" Style="{StaticResource InvisibleButtonStyle}" Width="{Binding ElementName=PLDuration, Path=Width}"/>
-                                        </GridViewColumn>
-                                        
-                                        <GridViewColumn x:Name="PLCount" Width="125">
-                                            <GridViewColumn.CellTemplate>
-                                                <DataTemplate>
-                                                    <DockPanel>
-                                                        <Label Style="{StaticResource SoundItemLabelStyle}" 
+                                                        </DockPanel>
+                                                    </DataTemplate>
+                                                </GridViewColumn.CellTemplate>
+                                                <Button Content="Duration" Style="{StaticResource InvisibleButtonStyle}" Width="{Binding ElementName=PLDuration, Path=Width}"/>
+                                            </GridViewColumn>
+
+                                            <GridViewColumn x:Name="PLCount" Width="125">
+                                                <GridViewColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <DockPanel>
+                                                            <Label Style="{StaticResource SoundItemLabelStyle}" 
                                                                Content="{Binding CountOfSongs, UpdateSourceTrigger=PropertyChanged}"/>
-                                                    </DockPanel>
-                                                </DataTemplate>
-                                            </GridViewColumn.CellTemplate>
-                                            <Button  Content="Count" Style="{StaticResource InvisibleButtonStyle}" Width="{Binding ElementName=PLCount, Path=Width}"/>
-                                        </GridViewColumn>
-                                    </GridView>
-                                </ListView.View>
+                                                        </DockPanel>
+                                                    </DataTemplate>
+                                                </GridViewColumn.CellTemplate>
+                                                <Button  Content="Count" Style="{StaticResource InvisibleButtonStyle}" Width="{Binding ElementName=PLCount, Path=Width}"/>
+                                            </GridViewColumn>
+                                        </GridView>
+                                    </ListView.View>
 
-                                <ListView.ContextMenu>
-                                    <ContextMenu>
-                                        <MenuItem Header="Ändere Playlist..." Command="{Binding EditPlayList}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.SelectedItem}"/>
-                                        <MenuItem Header="Lösche Playlist..." Command="{Binding DeletePlayList}"
+                                    <ListView.ContextMenu>
+                                        <ContextMenu>
+                                            <MenuItem Header="Ändere Playlist..." Command="{Binding EditPlayList}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.SelectedItem}"/>
+                                            <MenuItem Header="Lösche Playlist..." Command="{Binding DeletePlayList}"
                                                   CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.SelectedItem}" />
-                                    </ContextMenu>
-                                </ListView.ContextMenu>
-                            </ListView>
-
+                                        </ContextMenu>
+                                    </ListView.ContextMenu>
+                                </ListView>
+                            </StackPanel>
                         </Grid>
                     </TabItem>
 
