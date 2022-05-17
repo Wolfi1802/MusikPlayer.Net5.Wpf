@@ -49,29 +49,7 @@ namespace MusikPlayer
 
         public MainWindowViewModel()
         {
-            Logger.Instance.RunLogg(nameof(MainWindowViewModel), nameof(MainWindowViewModel), "Initalisiere Backend");
-            this.mediaPlayer = new MediaPlayer();
-            this.fileDirector = FileDirector.GetFileDirector();
-            this.soundItemFactory = new SoundItemFactory();
-
-            this.timer = new DispatcherTimer();
-            this.timer.Interval = TimeSpan.FromSeconds(0.5);
-            this.timer.Tick += OnTimerTick;
-
-            this.SoundItemsSourceFilter = new ObservableCollection<SoundItemViewModel>();
-            this.PlayListItemsSourceFilter = new ObservableCollection<PlayListListItem>();
-            this.SongListClassInstance = ListsRepository.Instance.GetInstanceSongs();
-
-            this.ProgressBarMax = 100;
-            this.ProgressBarValue = 0;
-
-            this.SetConfig();
-            this.FillItemsSource();
-
-
-            this.RunTextAnimationDuration = new TimeSpan(0, 0, 0, 15).ToString();
-
-            Logger.Instance.RunLogg(nameof(MainWindowViewModel), nameof(MainWindowViewModel), "Initalisiere Backend Ende Erfolgreich");
+            this.LoadSetUp();
         }
 
         #region Propertys
@@ -291,7 +269,6 @@ namespace MusikPlayer
         public static void OnProgrammShutDown()
         {
             Logger.Instance.RunLogg($"{nameof(MainWindowViewModel)}", $"{nameof(OnProgrammShutDown)}", $"{nameof(OnProgrammShutDown)} Sequenz");
-            JsonDirector.Instance.SaveConfigToJson(Config.Instance());
 
             var soundItemList = new List<SoundItem>();
 
@@ -300,9 +277,43 @@ namespace MusikPlayer
                 soundItemList.Add(soundItemVM.Model);
             }
 
-            JsonDirector.Instance.SaveSongDataToJson(soundItemList);
+            JsonDirector.Instance.TrySaveSongDataToJson(soundItemList);
+            JsonDirector.Instance.TrySaveConfigToJson(Config.Instance());
+            JsonDirector.Instance.TrySavePlayListsToJson(ListsRepository.Instance.PlayListItemsSource.ToList());
+
             Logger.Instance.RunLogg($"{nameof(MainWindowViewModel)}", $"{nameof(OnProgrammShutDown)}", $"{nameof(OnProgrammShutDown)} Sequenz Ende");
 
+        }
+
+        /// <summary>
+        /// Lädt View, Daten und was sonst nocht gebraucht wird.
+        /// </summary>
+        public void LoadSetUp()
+        {
+            Logger.Instance.RunLogg(nameof(MainWindowViewModel), nameof(MainWindowViewModel), "Initalisiere Backend");
+            this.mediaPlayer = new MediaPlayer();
+            this.fileDirector = FileDirector.GetFileDirector();
+            this.soundItemFactory = new SoundItemFactory();
+
+            this.timer = new DispatcherTimer();
+            this.timer.Interval = TimeSpan.FromSeconds(0.5);
+            this.timer.Tick += OnTimerTick;
+
+            this.SoundItemsSourceFilter = new ObservableCollection<SoundItemViewModel>();
+            this.PlayListItemsSourceFilter = new ObservableCollection<PlayListListItem>();
+            this.SongListClassInstance = ListsRepository.Instance.GetInstanceSongs();
+
+            this.ProgressBarMax = 100;
+            this.ProgressBarValue = 0;
+
+            this.SetConfig();
+            this.FillItemsSource();
+            this.FillPlayListRep();
+
+
+            this.RunTextAnimationDuration = new TimeSpan(0, 0, 0, 15).ToString();
+
+            Logger.Instance.RunLogg(nameof(MainWindowViewModel), nameof(MainWindowViewModel), "Initalisiere Backend Ende Erfolgreich");
         }
 
         private void OpenPlayList(bool isEdit = false, PlayListListItem playListListItem = null)
@@ -381,6 +392,32 @@ namespace MusikPlayer
 
             base.OnPropertyChanged(nameof(this.SoundItemsSourceFilter));
             Logger.Instance.RunLogg(nameof(MainWindowViewModel), nameof(FillItemsSource), "Lade Songs Ende Erfolgreich");
+        }
+
+        /// <summary>
+        /// Lade PLayListen aus Json
+        /// </summary>
+        private void FillPlayListRep()
+        {
+            Logger.Instance.RunLogg(nameof(MainWindowViewModel), nameof(FillPlayListRep), "Lade PlayListen");
+
+            try
+            {
+                var loadedPlayLists = JsonDirector.Instance.TryLoadPlayListsFromJson();
+
+                if (loadedPlayLists != null)
+                {
+                    ListsRepository.Instance.ReplacePlayListItemsSourceBy(new ObservableCollection<PlayListListItem>(loadedPlayLists));
+                    this.PlayListItemsSourceFilter = new ObservableCollection<PlayListListItem>(loadedPlayLists);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Logger.Instance.ExceptionLogg(nameof(MainWindowViewModel), nameof(FillPlayListRep), ex);
+            }
+
+            Logger.Instance.RunLogg(nameof(MainWindowViewModel), nameof(FillPlayListRep), "Lade PlayListen Ende Erfolgreich");
         }
 
         /// <summary>
