@@ -6,6 +6,9 @@ TODO[TS]
 - suche für songs in den reiter für songs verschieben[VIEW]
 - Backup laden und speichern
 
+[TS] [BugFix] Daten Speicherung 
+- Das Json wurde mehrfach angehangen, statt es zu überschreiben, was zu verschiedenen Fehlern geführt hat.
+
 [TS] [BugFix] PlayList konnte nicht gespeichert und geladen werden
 - Die Playlisten konnten weder gespeichert noch geladen werden, da die PRogrammierung dazu im falschen branch lag.
 
