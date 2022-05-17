@@ -2,9 +2,12 @@ TODO[TS]
 - Ladebildschirm
 - Scrollbar Template hinzugefügt
 - Abspielen von playlisten erlauben
-- suche für playlisten ermöglichen + reiter für die suche in playlist reiter schieben [View]
-- suche für songs in den reiter für songs verschieben[VIEW]
+- Button hinzufügen um beide Suchboxen zu leeren
 - Backup laden und speichern
+
+[TS] MINOR Update [Suche] [BugFix]
+- Es kann jetzt nach dem Namen der SongTitel sowie der PlayListen seperat gesucht werden
+- Version von 2.2.1 auf 2.3.2 gesetzt
 
 [TS] [BugFix] Daten Speicherung 
 - Das Json wurde mehrfach angehangen, statt es zu überschreiben, was zu verschiedenen Fehlern geführt hat.
