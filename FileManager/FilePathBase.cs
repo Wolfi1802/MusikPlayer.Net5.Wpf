@@ -9,10 +9,12 @@ namespace MusikPlayer.FileManager
 
         public const string CONFIG_FILE = "\\Config.json";
         public const string SONG_DATA_FILE = "\\SongData.json";
+        public const string PLAYLIST_FILE = "\\PlayList.json";
 
         public readonly string ConfigFilePath = $"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}{PROJECT_DIRECTORY}";
         public readonly string SongDataFilePath = $"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}{PROJECT_DIRECTORY}";
         public readonly string LogsFilePath = $"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}{PROJECT_DIRECTORY}";
+        public readonly string PlayListFilePath = $"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}{PROJECT_DIRECTORY}";
 
         private const string GLOBAL_FILTER = "Alle Dateien (*.*)|*.*";
         private const string PROJECT_DIRECTORY = "\\Mp3Player";

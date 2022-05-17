@@ -16,8 +16,12 @@ namespace MusikPlayer.ViewModel
             this.DurationToShow = item.Duration.ToString(item.StringFormatDuration);
             this.IsSelected = item.IsSelected;
         }
+        public PlayListItemViewModel()
+        {
+            this.Model = new PlayListItemModel();
+        }
 
-        public PlayListItemModel Model { private set; get; }
+        public PlayListItemModel Model { set; get; }
 
         public string NameToShow
         {

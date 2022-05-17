@@ -19,7 +19,6 @@ namespace MusikPlayer.FileManager
 
         }
 
-        //
         public void TrySaveConfigToJson(Config data)
         {
             try
@@ -41,6 +40,18 @@ namespace MusikPlayer.FileManager
             catch (Exception ex)
             {
                 Logger.Instance.ExceptionLogg(nameof(JsonDirector), nameof(TrySaveSongDataToJson), ex);
+            }
+        }
+
+        public void TrySavePlayListsToJson(List<PlayListListItem> data)
+        {
+            try
+            {
+                this.SavePlayListToJson(data, PLAYLIST_FILE, base.PlayListFilePath);
+            }
+            catch (Exception ex)
+            {
+                Logger.Instance.ExceptionLogg(nameof(JsonDirector), nameof(TrySavePlayListsToJson), ex);
             }
         }
 
@@ -77,7 +88,23 @@ namespace MusikPlayer.FileManager
 
             return null;
         }
-        //
+
+        public List<PlayListListItem> TryLoadPlayListsFromJson()
+        {
+            try
+            {
+                if (base.ExistFile(base.PlayListFilePath + PLAYLIST_FILE))
+                {
+                    return this.LoadPlayListFromJson(base.PlayListFilePath + PLAYLIST_FILE);
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Instance.ExceptionLogg(nameof(JsonDirector), nameof(TryLoadPlayListsFromJson), ex);
+            }
+
+            return null;
+        }
 
         public void SaveConfigToJson(Config data)
         {
@@ -87,6 +114,11 @@ namespace MusikPlayer.FileManager
         public void SaveSongDataToJson(List<SoundItem> data)
         {
             this.SaveSoundToJson(data, SONG_DATA_FILE, base.SongDataFilePath);
+        }
+
+        public void SavePlayListToJson(List<PlayListListItem> data)
+        {
+            this.SavePlayListToJson(data, PLAYLIST_FILE, base.PlayListFilePath);
         }
 
         public Config LoadConfigFromJson()
@@ -143,6 +175,16 @@ namespace MusikPlayer.FileManager
             base.SaveText(json, filePath);
         }
 
+        private void SavePlayListToJson(List<PlayListListItem> data, string file, string folder)
+        {
+            string filePath = $"{folder}{file}";
+
+            this.PrepareSaving(file, folder);
+
+            var json = JsonSerializer.Serialize(data);
+            base.SaveText(json, filePath);
+        }
+
         private List<SoundItem> Convert(List<SoundItem> value)
         {
             if (value == null || value.Count == 0)
@@ -163,6 +205,33 @@ namespace MusikPlayer.FileManager
                 }
 
                 list.Add(soundItem);
+            }
+
+            return list;
+        }
+
+        private List<PlayListListItem> Convert(List<PlayListListItem> value)
+        {
+            if (value == null || value.Count == 0)
+                return null;
+
+            List<PlayListListItem> list = new List<PlayListListItem>();
+
+            foreach (var playListListItem in value)
+            {
+                PlayListListItem newPlayListListItem = new PlayListListItem();
+                newPlayListListItem.Name = playListListItem.Name;
+                newPlayListListItem.ListOfSounds = playListListItem.ListOfSounds;
+                newPlayListListItem.CountOfSongs = playListListItem.CountOfSongs;
+
+                var convertedTimeSpanm = TimeSpanConverter.ConvertTimeSpam(playListListItem.DurationOfPlayListString);
+
+                if (convertedTimeSpanm.HasValue)
+                {
+                    newPlayListListItem.DurationOfPlayList = convertedTimeSpanm.Value;
+                }
+
+                list.Add(newPlayListListItem);
             }
 
             return list;
@@ -211,6 +280,29 @@ namespace MusikPlayer.FileManager
             var result = JsonSerializer.Deserialize<Config>(datas, options);
 
             return result;
+        }
+
+        private List<PlayListListItem> LoadPlayListFromJson(string filePath)//TODO [TS] timespan wird nicht richtig geladen
+        {
+            if (string.IsNullOrEmpty(filePath))
+            {
+                Logger.Instance.ExceptionLogg(nameof(JsonDirector), nameof(LoadPlayListFromJson), new Exception($"{nameof(filePath)}ist leer"));
+
+                return null;
+            }
+
+            string datas = base.LoadFile(filePath);
+
+            var options = new JsonSerializerOptions
+            {
+                IncludeFields = true,
+                IgnoreReadOnlyFields = true,
+                IgnoreReadOnlyProperties = true,
+            };
+
+            var result = JsonSerializer.Deserialize<List<PlayListListItem>>(datas, options);
+
+            return this.Convert(result);
         }
     }
 }

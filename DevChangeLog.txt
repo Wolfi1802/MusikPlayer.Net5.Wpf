@@ -6,20 +6,23 @@ TODO[TS]
 - suche für songs in den reiter für songs verschieben[VIEW]
 - Backup laden und speichern
 
+[TS] [BugFix] PlayList konnte nicht gespeichert und geladen werden
+- Die Playlisten konnten weder gespeichert noch geladen werden, da die PRogrammierung dazu im falschen branch lag.
+
 [TS] [BugFix] Config
--Konfigurationen konnten einen Crash der App auslösen
+- Konfigurationen konnten einen Crash der App auslösen
 
 [TS] [Dev] [Logger]
--Logger hinzugefügt
--Version von 2.2.0 auf 2.2.1 gesetzt
+- Logger hinzugefügt
+- Version von 2.2.0 auf 2.2.1 gesetzt
 
 [TS] MINOR Update [Playlist] [Release]
--Neue Funktion:
+- Neue Funktion:
 	-> Playlist kann erstellt,geändert und gelöscht werden
--Version von 2.1.0 auf 2.2.0 gesetzt
+- Version von 2.1.0 auf 2.2.0 gesetzt
 
 [TS] [Dev] [Playlist] MINOR Update 
--Neue Funktion:
+- Neue Funktion:
 	-> Playlist Stuff
 
 [TS]MAJOR Update Beta 2.0
