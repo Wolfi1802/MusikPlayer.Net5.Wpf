@@ -33,7 +33,7 @@ namespace MusikPlayer.FileManager
         public async void SaveText(string data, string filePath)
         {
             System.Diagnostics.Debug.WriteLine($"DEBUG -> LOG:\n{data}\n");
-            await File.AppendAllTextAsync(filePath, data);
+            await File.WriteAllTextAsync(filePath, data);
         }
 
         public string LoadFile(string filePath)
