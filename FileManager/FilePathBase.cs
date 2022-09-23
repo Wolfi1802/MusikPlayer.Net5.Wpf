@@ -1,6 +1,7 @@
 ﻿using Microsoft.Win32;
 using System;
 using System.IO;
+using System.Windows;
 
 namespace MusikPlayer.FileManager
 {
@@ -11,10 +12,10 @@ namespace MusikPlayer.FileManager
         public const string SONG_DATA_FILE = "\\SongData.json";
         public const string PLAYLIST_FILE = "\\PlayList.json";
 
-        public readonly string ConfigFilePath = $"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}{PROJECT_DIRECTORY}";
-        public readonly string SongDataFilePath = $"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}{PROJECT_DIRECTORY}";
-        public readonly string LogsFilePath = $"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}{PROJECT_DIRECTORY}";
-        public readonly string PlayListFilePath = $"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}{PROJECT_DIRECTORY}";
+        public readonly string ConfigFilePath = $"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}{PROJECT_DIRECTORY}";
+        public readonly string SongDataFilePath = $"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}{PROJECT_DIRECTORY}";
+        public readonly string LogsFilePath = $"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}{PROJECT_DIRECTORY}";
+        public readonly string PlayListFilePath = $"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}{PROJECT_DIRECTORY}";
 
         private const string GLOBAL_FILTER = "Alle Dateien (*.*)|*.*";
         private const string PROJECT_DIRECTORY = "\\Mp3Player";
@@ -33,6 +34,9 @@ namespace MusikPlayer.FileManager
         public async void SaveText(string data, string filePath)
         {
             System.Diagnostics.Debug.WriteLine($"DEBUG -> LOG:\n{data}\n");
+
+            FileInfo file = new System.IO.FileInfo(filePath);
+            file.Directory.Create();
             await File.WriteAllTextAsync(filePath, data);
         }
 
