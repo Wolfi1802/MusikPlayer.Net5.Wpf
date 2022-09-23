@@ -37,6 +37,8 @@
             <BitmapImage x:Key="MusicBanner01" UriSource="pack://application:,,,/Resources/Screenshot_6.png" />
             <BitmapImage x:Key="PictureBorder" UriSource="pack://application:,,,/Resources/Background.png" />
             <BitmapImage x:Key="SettingsIcon" UriSource="pack://application:,,,/Resources/Settings.png" />
+            <BitmapImage x:Key="PlayListIcon" UriSource="pack://application:,,,/Resources/CreatePlayList.png" />
+            
         </ResourceDictionary>
     </Window.Resources>
 
@@ -140,12 +142,16 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <Button Content="ICON Erstelle PlayList" Grid.Row="0" Grid.Column="0" Height="60" Width="60" Margin="10"  Command="{Binding CreatePlaylist}" Style="{StaticResource InvisibleButtonStyle}"/>
+                <Button Grid.Row="0" Grid.Column="0" Height="60" Width="60" Margin="10"  Command="{Binding CreatePlaylist}" Style="{StaticResource InvisibleButtonStyle}">
+                    <Button.Content>
+                        <Image Source="{StaticResource PlayListIcon}" Stretch="Fill" Margin="2"/>
+                    </Button.Content>
+                </Button>
                 <Button Content="Feature 2" Grid.Row="1" Grid.Column="0" Height="60" Width="60" Margin="10" IsEnabled="False"/>
                 <Button Content="Feature 3" Grid.Row="2" Grid.Column="0" Height="60" Width="60" Margin="10" IsEnabled="False"/>
                 <Button Content="Feature 4" Grid.Row="3" Grid.Column="0" Height="60" Width="60" Margin="10" IsEnabled="False"/>
                 <Button Content="Feature 5" Grid.Row="4" Grid.Column="0" Height="60" Width="60" Margin="10" IsEnabled="False"/>
-                <Button Grid.Row="6" Grid.Column="0" Height="60" Width="60" Margin="10" Command="{Binding OpenSettings}" Style="{StaticResource InvisibleButtonStyle}" IsEnabled="False">
+                <Button Grid.Row="6" Grid.Column="0" Height="60" Width="60" Margin="10" Command="{Binding OpenSettings}" Style="{StaticResource InvisibleButtonStyle}" >
                     <Button.Content>
                         <Image Source="{StaticResource SettingsIcon}" Stretch="Fill" Margin="2"/>
                     </Button.Content>

@@ -33,7 +33,7 @@ namespace MusikPlayer
         /// <para>MINOR jedes Features eine 0.X.0 ändern</para>
         /// <para>BUILD jeder BugFix eine 0.0.X ändern</para>
         /// </summary>
-        private const string VERSION_INFO = "2.3.2";
+        private const string VERSION_INFO = "2.3.3";
 
         private readonly List<string> mediaExtensions = new List<string> { FILE_DATA_NAME };
 

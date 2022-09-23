@@ -5,6 +5,10 @@ TODO[TS]
 - Button hinzufügen um beide Suchboxen zu leeren
 - Backup laden und speichern
 
+[TS] BUILD Update [PlayList] [View]
+- PlayList Icon hinzugefügt
+- Version von 2.3.2 auf 2.3.3 gesetzt
+
 [TS] [Dev] [BugFix]
 - Logs und PlayLists konnten durch windows 11 nicht mehr geschrieben/geladen werden
 
