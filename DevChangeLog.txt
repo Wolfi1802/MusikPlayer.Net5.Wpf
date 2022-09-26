@@ -5,6 +5,8 @@ TODO[TS]
 - Button hinzufügen um beide Suchboxen zu leeren
 - Backup laden und speichern
 
+[TS] Aufploppendes Konsolen Fenster entfernt
+
 [TS] BUILD Update [PlayList] [View]
 - PlayList Icon hinzugefügt
 - Version von 2.3.2 auf 2.3.3 gesetzt
